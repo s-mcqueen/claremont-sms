@@ -92,6 +92,7 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
 
+
     if numberExists(number):
         processExisting(body, number)
 
@@ -175,7 +176,6 @@ def processExisting(body, number):
 
 
     elif parse.validSignupRequest(body):
-        print "yes this is true"
         to_number = number
         the_user = User.objects(phone = number).get().name
         message_body = "The phone number is already registered!"
