@@ -35,52 +35,40 @@ DB_USERNAME = 'evan'
 DB_PASSWORD = 'smegma69'
 DB_HOST_ADDRESS = 'ds031857.mongolab.com:31857/claremont-sms-db'
 
-app.config["MONGODB_DB"] = DB_NAME
+app.config["MONGODB_DB"] = DB_NAME 
 connect(DB_NAME, host='mongodb://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_HOST_ADDRESS)
 db = MongoEngine(app)
 
 #---------------------------------------------
 # models
 # --------------------------------------------
-"""
+
 #class to hold the message fields
 class Message(Document):
 
-	structure = {
-		'from_name' : basestring,
-		'from_phone' : basestring,
-		'message' : basestring,
-		'to_name' : basestring,
-		'created_at': datetime.datetime
-	}
+	from_name = db.StringField(max_length=255)
+	from_phone = db.StringField(max_length=15)
+	message = db.StringField(max_length=400)
+	to_name = db.StringField(max_length=255)
+	created_at = db.DateTimeField(default=datetime.datetime.now)
+	guess_id = db.StringField(max_length=5)
 
-	#make created_at get filled automatically
-	default_values = {'created_at': datetime.datetime.utcnow}
-	use_dot_notation = True
-"""
 #class to hold the user fields
 class User(db.DynamicDocument):
-	#name, phone, created_at fields
-	name = db.StringField(max_length=255, unique=True)
-	phone = db.StringField(max_length=25, unique=True)
-	created_at = db.DateTimeField(default=datetime.datetime.now)
-	"""
-	def __unicode__(self):
-		return self.name
 
-	meta = {
-		'indexes' : ['-created_at', 'name', 'phone'],
-		'ordering' : ['-created_at']
-	}
-	"""
+	name = db.StringField(max_length=255, unique=True)
+	phone = db.StringField(max_length=15, unique=True)
+	created_at = db.DateTimeField(default=datetime.datetime.now)
 
 #---------------------------------------------
 # controllers
 # --------------------------------------------
 
-@app.route("/", methods = ['GET', 'POST'])
-def hello():
-    return "hello yo"
+@app.route("/", methods = ['GET', 'POST']) 
+def getMessages():
+	#get all messages from the db
+	messages = Messages.objects
+	return messages
 
 #method to recieve texts, parse them, and store in mongo
 @app.route("/receive", methods = ['GET', 'POST'])
@@ -89,23 +77,58 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
 
-    print "body: " + str(body)
-    print "number: " + str(number)
+    # doesUserExist?
+    # 	valid message?
+    # 		get to number
+    # 			is tonumber in db??
+    # 				get message
+    # 				forward
+    # 	valid guess?
+    # 		get guess number
+    # 			is guess number in db?
+    # 				get guess name
+    # 				does it match?
+    # 				send something
+    # 	valid signup?
+    # 		tell tehm you are already here!
+    # 	valid stop?
+    # 		remove them
+    # else:
+    # 	valid signup?
+    # 		get signupname
+    # 		sign them up
+    # 	anything else:
+    # 		fuck you, sign up!
 
-    '''TODO: add in parsing logic'''
+
+
+    #tell new_user to look in the User collection
+    new_user = User()
     
     #store the name and phone in Users
-    new_user = User()
     new_user.name = str(body)
     new_user.phone = str(number)
 
     #save data in user collection
     new_user.save()
+
+    print "exists: " + str(doesUserExist(number))
+
 	
     #sends back a text
     resp = twilio.twiml.Response()
     resp.sms(body)
     return str(resp)
+
+ def doesUserExist(phone_number):
+ 	if User.objects(phone = phone_number) is None:
+ 		return False
+ 	else:
+ 		return True
+
+ 
+
+
 
 #---------------------------------------------
 # launch
@@ -114,5 +137,4 @@ def receive():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
-
 
