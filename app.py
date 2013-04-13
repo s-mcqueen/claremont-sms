@@ -93,7 +93,7 @@ def receive():
     
     new_user = User()
     new_user.name = str(body)
-    new_user.phone = str(number)
+    new_user.phone = int(number)
 
 
     print "name: " + new_user.name
