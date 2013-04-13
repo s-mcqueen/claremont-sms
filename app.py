@@ -85,16 +85,15 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
 
+    print "body: " + body
+    print "number: " + number
+
     '''TODO: add in parsing logic'''
     
     #store the name and phone in Users
-    if number is not None:
-    	new_user = User()
-    	new_user.name = str(body)
-    	new_user.phone = int(number)
-
-
-    print "name: " + new_user.name
+	new_user = User()
+	new_user.name = str(body)
+	new_user.phone = int(number)
 
     #save data in user collection
     new_user.save()
