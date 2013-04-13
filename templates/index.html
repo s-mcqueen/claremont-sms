@@ -6,7 +6,12 @@
 	<link href="../static/custom.css" rel="stylesheet" media="screen">
 </head>
 <body>
-	<div class="container">
+
+
+
+
+
+	<div class="container" id="header">
 		<div class="row">
 			<div class="span12">
 			</div>
@@ -35,28 +40,60 @@
 							  						<input class="span2" id="appendedPrependedInput" type="text" placeholder="1-555-555-555">
 							  					</div>
 							  				</br>
-												<button type="submit" class="btn btn-primary">Create Account</button>
+							  				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#intro">Create Account</button>
 										</fieldset>
 									</form>
 							</div> 
-
-		</div>
+						</div>
 			</div>
 
 			<div class="span7">
 				<div class="row">
-					<div class="span7" id="entries">
+					<div class="span7" id="entry">
 						<h2>entries</h2>
+					</div>
+					<div class="span7" id="entry2">
+						
+						<p>Sean McQueen is such a dreamboat!</p>
 					</div>
 				</div>
 			</div>
 		</div>
 
-	</br>
-
-
-
 	</div>
-	<script src="css/bootstrap/js/bootstrap.min.js"></script>
+
+	
+
+	<div class="container" id="footer">
+		<div class="row">
+			<div class="span12"></div>
+		</div>
+	</div>
+
+
+		<div id="intro" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="introLabel" aria-hidden="true"> 
+			<div class="intro-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<h3>Welcome to Claremont SMS!</h3>
+			</div>
+			<div class="intro-body">
+				<p>This is how it works...</p>
+			</div>
+			<div class="intro-footer">
+				<button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Thanks!</button>
+			</div>
+		</div>
+
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script src="../static/bootstrap/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+$(function() {
+	$('#intro').modal({show = false;});
+});
+</script>
+
+
 </body>
 </html>
