@@ -95,8 +95,8 @@ def receive():
     if numberExists(number):
         processExisting(body, number)
 
-    # else:
-    #     processNew(body, number)
+    else:
+        processNew(body, number)
 
 
 
@@ -200,6 +200,7 @@ def processNew(body, number):
         user = User()
         user.name = new_name
         user.phone = number
+        user.save()
 
         to_number = number
         message_body = "Welcome! Text 'STOP CLAREMONT SMS' to leave the service. \
