@@ -96,6 +96,7 @@ def receive():
         processExisting(body, number)
 
     else:
+        print "yo"
         processNew(body, number)
 
 
