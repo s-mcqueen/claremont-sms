@@ -101,14 +101,14 @@ def receive():
 
 #check if number exists already in users DB
 def numberExists(phone_number):
- 	if User.objects(phone = phone_number).get() is None:
+ 	if len(User.objects(phone = phone_number).get()) == 0:
  		return False
  	else:
  		return True
 
 #checks if user exists in users DB
 def userExists(user_name):
-	if User.objects(name = user_name).get() is None:
+    if len(User.objects(name = user_name).get()) == 0:
 		return False
 	else:
 		return True
