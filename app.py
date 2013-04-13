@@ -101,17 +101,20 @@ def receive():
 
 #check if number exists already in users DB
 def numberExists(phone_number):
- 	if len(User.objects(phone = phone_number).get()) == 0:
- 		return False
- 	else:
- 		return True
+    print "phone " + str(len(User.objects(phone = phone_number).get()))
+    
+    if (len(User.objects(phone = phone_number).get()) == 0):
+        return False
+    else:
+        return True
 
 #checks if user exists in users DB
 def userExists(user_name):
-    if len(User.objects(name = user_name).get()) == 0:
-		return False
-	else:
-		return True
+    print "user " + str(len(User.objects(name = user_name).get()))
+    if (len(User.objects(name = user_name).get()) == 0):
+        return False
+    else:
+        return True
 
 
 #process the text if the user exists in our db
