@@ -105,28 +105,50 @@ def receive():
     # resp.sms(body)
     # return str(resp)
 
+#check if number exists already in users DB
 def numberExists(phone_number):
  	if User.objects(phone = phone_number) is None:
  		return False
  	else:
  		return True
 
- 
+#checks if user exists in users DB
+def userExists(user_name):
+	if User.objects(name = user_name) in None:
+		return False
+	else:
+		return True
+
+#process the text if the user exists in our db
 def processExisting(body, number):
+
+	new_message = Message()
+	new_message.from_name = User.objects(phone = number)
+	new_message.from_phone = number
 
 
     if parse.validMessageRequest(body):
-        to_number = parse.getMessageTo(body)
-        if doesNumberExist(to_number):
+        #name of the person being tagged
+        user_name = parse.getMessageTo(body)
+        
+        if userExists(user_name):
+
             message_body = parse.getMessageBody(body)
+            new_message.massage = message_body
+
+
 
             # forward the message
+            # TODO
+            
+            new_message.save()
 
     if parse.validGuessRequest(body):
         guess_number = parse.getGuessNumber(body)
         # check if guess_id is in db (function here)
         # if (it is):
             guess_name = parse.getGuessName(body)
+
             # does guess_name match the db name associated with id
 
             # send them "yes" or "no"
