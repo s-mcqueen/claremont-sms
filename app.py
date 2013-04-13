@@ -187,23 +187,29 @@ def processExisting(body, number):
 
     else:
         to_number = number
-        message_body = "hmm.. I don't know what you mean. \
-                        Text STOP CLAREMONT SMS to leave the service. \
-                        Text    First Last: message   to text a friend." 
+        message_body = "Text 'STOP CLAREMONT SMS' to leave the service. \
+                        Text 'Firstname Lastname: message' to text a friend." 
         client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
 
 
 
-# def processNew(body, number):
-#     if parse.validSignupRequest(body):
-#         new_name = parse.getSignupName(body)
+def processNew(body, number):
+    if parse.validSignupRequest(body):
+        new_name = parse.getSignupName(body)
 
-#         # add new_name with "number" (above) to db
+        user = User()
+        user.name = new_name
+        user.phone = number
 
-#         # send welcome text
-#     else:
-        
-#         # reply: please sign up
+        to_number = number
+        message_body = "Welcome! Text 'STOP CLAREMONT SMS' to leave the service. \
+                        Text 'Firstname Lastname: message' to text a friend." 
+        client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
+
+    else:
+        to_number = number
+        message_body = "Text 'SIGNUP: Firstname Lastname' to join Claremont SMS!" 
+        client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
 
 
 
