@@ -27,6 +27,9 @@ def validMessageRequest(sms_body):
         if c not in 'qwertyuiopasdfghjklzxcvbnm':
             return False
 
+    if (name_section == 'signup'):
+        return False
+
     return True
 
 def getMessageTo(sms_body):
@@ -98,17 +101,16 @@ def validSignupRequest(sms_body):
     ''' return true if the sms is a valid signup request
         ie: "SIGNUP: first last" '''
     sms = colonSplit(sms_body)
-
+    print "here"
     if (len(sms) < 2):
         # there is no colon, so we don't have a name
         return False
-
+    print "there"
     signup_section = sms[0]
     signup_section = signup_section.lower().replace(' ', '')
 
     if (signup_section == 'signup'):
         return True
-
     return False
 
 def getSignupName(sms_body):
