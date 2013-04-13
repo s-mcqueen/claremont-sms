@@ -3,9 +3,13 @@
 }
 
 .span8 {
-	background-color: green;
+	background-color: blue;
 }
 
 #signup {
 	padding-left: 30px;
+}
+
+#entries {
+	height: 900px;
 }
