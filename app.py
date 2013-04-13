@@ -1,7 +1,7 @@
 import os
 from flask import Flask, request, redirect, render_template, session, url_for, send_from_directory
 import twilio.twiml
-from twilio import TwilioRestClient
+from twilio.rest import TwilioRestClient
 import urllib
 import json
 import datetime
