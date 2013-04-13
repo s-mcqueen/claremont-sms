@@ -90,7 +90,7 @@ def receive():
     number = request.values.get('From')
 
     user = User.objects(phone = number)
-    print user[0]
+    print str(user[0])
 
     # if numberExists(number):
     #     processExisting(body, number)
