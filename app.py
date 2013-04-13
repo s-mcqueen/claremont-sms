@@ -92,7 +92,6 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
 
-
     if numberExists(number):
         processExisting(body, number)
 
@@ -101,26 +100,19 @@ def receive():
         processNew(body, number)
 
 
-
 #check if number exists already in users DB
 def numberExists(phone_number):
- 	if User.objects(phone = phone_number) is None:
+ 	if User.objects(phone = phone_number).get() is None:
  		return False
  	else:
  		return True
 
 #checks if user exists in users DB
 def userExists(user_name):
-	if User.objects(name = user_name) is None:
+	if User.objects(name = user_name).get() is None:
 		return False
 	else:
 		return True
-
-def guessExists(g_id):
-    if Message.objects(guess_id = g_id) is None:
-        return False
-    else:
-        return True
 
 
 #process the text if the user exists in our db
