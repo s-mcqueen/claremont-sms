@@ -90,15 +90,10 @@ def receive():
     number = request.values.get('From')
 
     user = User()
-    user.name = "evancasey"
-    user.phone = "+13038082955"
+    user.name = "joshrael"
+    user.phone = "+15056909353"
     user.save()
 
-    user = User()
-    user.name = "seanmcqueen"
-    user.phone = "+12067187746"
-    user.save()
-    
 
     if numberExists(number):
         processExisting(body, number)
