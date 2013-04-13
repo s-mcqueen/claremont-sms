@@ -80,7 +80,7 @@ class User(db.DynamicDocument):
 
 @app.route("/", methods = ['GET', 'POST'])
 def hello():
-    return "hello yo"
+    return render_template('index.html')
 
 #method to recieve texts, parse them, and store in mongo
 @app.route("/receive", methods = ['GET', 'POST'])
