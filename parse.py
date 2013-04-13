@@ -123,9 +123,6 @@ def getSignupName(sms_body):
     # make name lower case and remove spaces
     name_section = name_section.lower().replace(' ', '')
     
-    # remove all chars that are not alphabet
-    name_section.sub('', '1234567890!@#$%^&*().{}\~`,')
-
     return name_section
 
 
