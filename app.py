@@ -62,7 +62,7 @@ class User(db.DynamicDocument):
     created_at = db.DateTimeField(default=datetime.datetime.now)
     guess_counter = db.StringField(max_length=5)
     meta = {
-        'indexes' : ['-created_at', 'name', 'phone', 'guess_counter']
+        'indexes' : ['-created_at', 'name', 'phone', 'guess_counter'],
         'ordering' : ['-created_at']
     }
 
