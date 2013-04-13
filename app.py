@@ -144,7 +144,7 @@ def processExisting(body, number):
             to_number = (User.objects(name = user_name)).get().phone
             new_message.to_phone = to_number
 
-            message_and_id = message_body + "(" + g_id + ")"
+            message_and_id = message_body + " (" + g_id + ")"
             
             # send the text! 
             client.sms.messages.create(to=to_number, from_="+13602052266", body=message_and_id)
