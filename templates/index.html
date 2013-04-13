@@ -1,39 +1,99 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title> Claremont SMS </title>
+	<title>Claremont SMS</title>
 	<link href="../static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link href="../static/custom.css" rel="stylesheet" media="screen">
 </head>
 <body>
+
+
+
+
+
+	<div class="container" id="header">
+		<div class="row">
+			<div class="span12">
+			</div>
+		</div>
+	</div>
+
 	<div class="container">
 		<div class="row">
-		<h1>Welcome to Claremont SMS!</h1>
-		</div>
-	</div>
-		<div class="container">
-		<div class="row">
-			<div class="span4">
-				<form action="">
-					<fieldset id="signup">
-						<label>Your Name</label>
-						<input type="text" placeholder="First Last">
-						<label>Your Phone Number</label>
-						<div class="input-prepend">
-  							<span class="add-on">+</span>
-  							<input class="small" id="appendedPrependedInput" type="text" placeholder="1-555-555-555">
-  						</div>
-  						</br>
-						<button type="submit" class="btn btn-primary">Create Account</button>
-					</fieldset>
-				</form>
-			</div>
-			<div class="span8">
-				<h2>entries</h2>
+			<div class="span5">
+				<h1>Claremont SMS</h1>
 
+						<!-- form -->
+						<div class="row">
+							<div class="span5">
+								<p>Claremont SMS is a service that allows you to text your friends anonymously</p>
+									<form action="">
+										<fieldset id="signup">
+											<div class="controls controls-row">
+												<label>Your Name</label>
+												<input class="span2" type="text" placeholder="First">
+												<input class="span2" type="text" placeholder="Last">
+											</div>
+											<label>Your Phone Number</label>
+												<div class="input-prepend">
+							  						<span class="add-on">+</span>
+							  						<input class="span2" id="appendedPrependedInput" type="text" placeholder="1-555-555-555">
+							  					</div>
+							  				</br>
+							  				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#intro">Create Account</button>
+										</fieldset>
+									</form>
+							</div> 
+						</div>
+			</div>
+
+			<div class="span7">
+				<div class="row">
+					<div class="span7" id="entry">
+						<h2>entries</h2>
+					</div>
+					<div class="span7" id="entry2">
+						
+						<p>Sean McQueen is such a dreamboat!</p>
+					</div>
+				</div>
 			</div>
 		</div>
+
 	</div>
-	<script src="css/bootstrap/js/bootstrap.min.js"></script>
+
+	
+
+	<div class="container" id="footer">
+		<div class="row">
+			<div class="span12"></div>
+		</div>
+	</div>
+
+
+		<div id="intro" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="introLabel" aria-hidden="true"> 
+			<div class="intro-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<h3>Welcome to Claremont SMS!</h3>
+			</div>
+			<div class="intro-body">
+				<p>This is how it works...</p>
+			</div>
+			<div class="intro-footer">
+				<button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Thanks!</button>
+			</div>
+		</div>
+
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script src="../static/bootstrap/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+$(function() {
+	$('#intro').modal({show = false;});
+});
+</script>
+
+
 </body>
 </html>

@@ -1,11 +1,29 @@
-.span4 {
-	background-color: gray;
+.span5 {
+/*	background-color: gray;
+*/}
+
+
+.span7 {
+/*	background-color: green;
+*/	height: 900px;
+
 }
 
-.span8 {
-	background-color: green;
+.span12 {
+	background-color: red;
+	height: 60px;
 }
 
 #signup {
-	padding-left: 30px;
+
+}
+
+#entry {
+	background-color: blue;
+	height: 80px;
+}
+
+#entry2 {
+	background-color: #C2C2C2;
+	height: 80px;
 }
