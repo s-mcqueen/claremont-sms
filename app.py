@@ -62,7 +62,7 @@ class Message(Document):
 class User(db.DynamicDocument):
 	#name, phone, created_at fields
 	name = db.StringField(max_length=255, unique=True)
-	phone = db.IntField(unique=True)
+	phone = db.StringField(max_length=25, unique=True)
 	created_at = db.DateTimeField(default=datetime.datetime.now)
 	"""
 	def __unicode__(self):
@@ -85,15 +85,15 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
 
-	print "body: " + body
-	print "number: " + number
+	print "body: " + str(body)
+	print "number: " + str(number)
 
     '''TODO: add in parsing logic'''
     
     #store the name and phone in Users
 	new_user = User()
 	new_user.name = str(body)
-	new_user.phone = int(number)
+	new_user.phone = str(number)
 
     #save data in user collection
     new_user.save()
