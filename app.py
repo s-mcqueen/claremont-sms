@@ -79,9 +79,8 @@ def getMessages():
 """
 @app.route("/", methods = ['GET'])
 def display():
-    message = Message.objects(from_name='seanmcqueen').get()
-    recipient = Message.objects(from_name='seanmcqueen').get()
-    return render_template('index.html', message=message, name=recipient)
+    messages = list(Message.objects())
+    return render_template('index.html', posts = messages)
 
 
 #method to recieve texts, parse them, and store in mongo
@@ -147,7 +146,7 @@ def processExisting(body, number):
         # if we know tagged user, we will send the text body
         if userExists(user_name):
             # store our phone number
-            to_number = (User.objects(name = user_name)).get().phone
+            to_number = User.objects(name = user_name).get().phone
             new_message.to_phone = to_number
 
             # send the text! 
