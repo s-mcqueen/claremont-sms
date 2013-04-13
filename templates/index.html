@@ -15,9 +15,17 @@
 		<div class="row">
 			<div class="span4">
 				<form action="">
-					<input type="text" placeholder="First Last">
-					<input type="text" placeholder="1-555-555-555">
-					<input type="submit" value="Create Account">
+					<fieldset id="signup">
+						<label>Your Name</label>
+						<input type="text" placeholder="First Last">
+						<label>Your Phone Number</label>
+						<div class="input-prepend">
+  							<span class="add-on">+</span>
+  							<input class="small" id="appendedPrependedInput" type="text" placeholder="1-555-555-555">
+  						</div>
+  						</br>
+						<button type="submit" class="btn btn-primary">Create Account</button>
+					</fieldset>
 				</form>
 			</div>
 			<div class="span8">

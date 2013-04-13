@@ -1,7 +1,11 @@
 .span4 {
-	background-color: blue;
+	background-color: gray;
 }
 
 .span8 {
 	background-color: green;
+}
+
+#signup {
+	padding-left: 30px;
 }
