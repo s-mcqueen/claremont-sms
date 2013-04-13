@@ -176,13 +176,16 @@ def processExisting(body, number):
     elif parse.validSignupRequest(body):
         print "yes this is true"
         to_number = number
-        the_person = User.objects(phone = number).get().name
-        message_body = "It seems like you are already signed up ?"
+        the_user = User.objects(phone = number).get().name
+        message_body = "The phone number is already registered!"
         client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
 
 
-    # if parse.validStopRequest(body):
-    #     # removed from db
+    elif parse.validStopRequest(body):
+        # delete the user from our database
+        User.objects(phone = number).get().delete()
+
+
 
 
 # def processNew(body, number):
