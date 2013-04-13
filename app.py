@@ -173,9 +173,11 @@ def processExisting(body, number):
             client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
 
 
-    # if parse.validSignupRequest(body):
-
-    #     # send sms: you're already signed up
+    elif parse.validSignupRequest(body):
+        to_number = number
+        the_person = User.objects(phone = number).get().name
+        message_body = "It seems like you are already signed up.. are you " + the_person + "?"
+        client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
 
 
     # if parse.validStopRequest(body):
