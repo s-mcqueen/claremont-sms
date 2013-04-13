@@ -27,6 +27,9 @@ def validMessageRequest(sms_body):
         if c not in 'qwertyuiopasdfghjklzxcvbnm':
             return False
 
+    if (name_section == 'signup'):
+        return False
+
     return True
 
 def getMessageTo(sms_body):
@@ -108,7 +111,6 @@ def validSignupRequest(sms_body):
 
     if (signup_section == 'signup'):
         return True
-
     return False
 
 def getSignupName(sms_body):
@@ -120,6 +122,10 @@ def getSignupName(sms_body):
 
     # make name lower case and remove spaces
     name_section = name_section.lower().replace(' ', '')
+    
+    # remove all chars that are not alphabet
+    name_section.sub('', '1234567890!@#$%^&*().{}\~`,')
+
     return name_section
 
 

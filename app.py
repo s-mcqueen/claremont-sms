@@ -7,6 +7,7 @@ import json
 import datetime
 #importing parse.py for text parsing
 import parse
+import random
 
 #---------------------------------------------
 # initialization
@@ -56,7 +57,7 @@ class Message(db.DynamicDocument):
     to_name = db.StringField(max_length=255)
     to_phone = db.StringField(max_length=15)
     created_at = db.DateTimeField(default=datetime.datetime.now)
-    guess_id = db.StringField(max_length=5)
+    guess_id = db.StringField(max_length=5) 
 
 #class to hold the user fields
 class User(db.DynamicDocument):
@@ -64,7 +65,7 @@ class User(db.DynamicDocument):
     name = db.StringField(max_length=255, unique=True)
     phone = db.StringField(max_length=15, unique=True)
     created_at = db.DateTimeField(default=datetime.datetime.now)
-    guess_counter = db.StringField(max_length=5)
+    # guess_counter = db.StringField(max_length=5)
     
 #---------------------------------------------
 # controllers
@@ -90,26 +91,15 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
 
+
     if numberExists(number):
         processExisting(body, number)
 
-    # else:
-    #     processNew(body, number)
+    else:
+        print "yo"
+        processNew(body, number)
 
-    # #tell new_user to look in the User collection
-    # new_user = User()
-    
-    # #store the name and phone in Users
-    # new_user.name = str(body)
-    # new_user.phone = str(number)
 
-    # #save data in user collection
-    # new_user.save()
-
-    #sends back a text
-    # resp = twilio.twiml.Response()
-    # resp.sms(body)
-    # return str(resp)
 
 #check if number exists already in users DB
 def numberExists(phone_number):
@@ -125,6 +115,12 @@ def userExists(user_name):
 	else:
 		return True
 
+def guessExists(g_id):
+    if Message.objects(guess_id = g_id) is None:
+        return False
+    else:
+        return True
+
 
 #process the text if the user exists in our db
 def processExisting(body, number):
@@ -135,53 +131,86 @@ def processExisting(body, number):
         user_name = parse.getMessageTo(body)
         message_body = parse.getMessageBody(body)
 
-        # this is a valid message, so we will set up a database entry
+        # this is a valid message, so we will set up a message db entry
         new_message = Message()
         new_message.from_name = User.objects(phone = number).get().name
         new_message.from_phone = number
         new_message.message = message_body
         new_message.to_name = user_name
         new_message.to_phone = ''
+        g_id = str(random.randint(1,99999))  # we sms g_id out so people can guess!
+        new_message.guess_id = g_id
 
-        # if we know tagged user, we will send the text body
+        # if we know tagged user, we will forward the text body
         if userExists(user_name):
             # store our phone number
             to_number = User.objects(name = user_name).get().phone
             new_message.to_phone = to_number
 
+            message_and_id = message_body + " (" + g_id + ")"
+            
             # send the text! 
-            client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
+            client.sms.messages.create(to=to_number, from_="+13602052266", body=message_and_id)
 
         new_message.save()
 
+    # if this looks like a guess
+    elif parse.validGuessRequest(body):
 
-    # if parse.validGuessRequest(body):
-    #     guess_number = parse.getGuessNumber(body)
-    #     # check if guess_id is in db (function here)
-    #     # if (it is):
-    #         guess_name = parse.getGuessName(body)
+        # we grab the guess the user sends us
+        guess_number = parse.getGuessNumber(body)
 
-    #         # does guess_name match the db name associated with id
-
-    #         # send them "yes" or "no"
-
-    # if parse.validSignupRequest(body):
-
-    #     # send sms: you're already signed up
-
-
-    # if parse.validStopRequest(body):
-    #     # removed from db
+        # if it does then we that actual name
+        actual_name = Message.objects(guess_id = guess_number).get().from_name
+        guess_name = parse.getGuessName(body)
+        
+        if (guess_name == actual_name):
+            to_number = number
+            message_body = "Yep. You guessed it."
+            client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
+        else:
+            to_number = number
+            message_body = "Nope, you guessed wrong."
+            client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
 
 
-# def processNew(body, number):
-#     if parse.validSignupRequest(body):
-#         new_name = parse.getSignupName(body)
-#         # add new_name with "number" (above) to db
+    elif parse.validSignupRequest(body):
+        to_number = number
+        the_user = User.objects(phone = number).get().name
+        message_body = "The phone number is already registered!"
+        client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
 
-#         # send welcome text
-#     else:
-#         # reply: please sign up
+
+    elif parse.validStopRequest(body):
+        # delete the user from our database
+        User.objects(phone = number).get().delete()
+
+    else:
+        to_number = number
+        message_body = "Text 'STOP CLAREMONT SMS' to leave the service. \
+                        Text 'Firstname Lastname: message' to text a friend." 
+        client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
+
+
+
+def processNew(body, number):
+    if parse.validSignupRequest(body):
+        new_name = parse.getSignupName(body)
+
+        user = User()
+        user.name = new_name
+        user.phone = number
+        user.save()
+
+        to_number = number
+        message_body = "Welcome! Text 'STOP CLAREMONT SMS' to leave the service. \
+                        Text 'Firstname Lastname: message' to text a friend." 
+        client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
+
+    else:
+        to_number = number
+        message_body = "Text 'SIGNUP: Firstname Lastname' to join Claremont SMS!" 
+        client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
 
 
 
