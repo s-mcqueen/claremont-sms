@@ -103,7 +103,7 @@ def numberExists(phone_number):
     print "number " + str(User.objects(phone = phone_number))
     
 
-    if (User.objects(phone = phone_number) is None):
+    if len(User.objects(phone = phone_number) == 0):
         return False
     else:
         return True
@@ -112,7 +112,7 @@ def numberExists(phone_number):
 def userExists(user_name):
     print "user " + str(User.objects(name = user_name))
     
-    if (User.objects(name = user_name) is None):
+    if len(User.objects(name = user_name) == 0):
         return False
     else:
         return True
