@@ -89,16 +89,6 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
 
-    user = User()
-    user.name = "Sean McQueen"
-    user.phone = "+12067187746"
-    user.save()
-
-    user = User()
-    user.name = "Evan Casey"
-    user.phone = "+13038082955"
-    user.save()
-
     if numberExists(number):
         processExisting(body, number)
 
@@ -129,7 +119,7 @@ def numberExists(phone_number):
 
 #checks if user exists in users DB
 def userExists(user_name):
-	if User.objects(name = user_name) in None:
+	if User.objects(name = user_name) is None:
 		return False
 	else:
 		return True
