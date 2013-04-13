@@ -136,7 +136,7 @@ def processExisting(body, number):
 
         # this is a valid message, so we will set up a database entry
         new_message = Message()
-        new_message.from_name = User.objects(phone = number)
+        new_message.from_name = User.objects(phone = number).get().name
         new_message.from_phone = number
         new_message.message = message_body
         new_message.to_name = user_name
@@ -145,7 +145,7 @@ def processExisting(body, number):
         # if we know tagged user, we will send the text body
         if userExists(user_name):
             # store our phone number
-            to_number = (User.objects(name = user_name)).get().to_phone
+            to_number = (User.objects(name = user_name)).get().phone
             new_message.to_phone = to_number
 
             # send the text! 
