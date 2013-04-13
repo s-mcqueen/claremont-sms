@@ -79,7 +79,6 @@ class User(db.DynamicDocument):
 # --------------------------------------------
 
 @app.route("/", methods = ['GET', 'POST'])
-
 def hello():
     return "hello yo"
 
