@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, redirect, render_template, session, url_for, send_from_directory
 import twilio.twiml
+from twilio import TwilioRestClient
 import urllib
 import json
 import datetime
@@ -19,6 +20,9 @@ app.config.update(
 
 twilio_id = "AC65492579e6a94943a72ebed4c4f4b788"
 twilio_token = "81ebc16c6a6fd61bf25631ee0b649e01"
+
+client = TwilioRestClient(twilio_id, twilio_token)
+
 
 app.config["SECRET_KEY"] = '\xe6yM\xbc\xe2\x04/)\xc4@~t\x0c?\xbfr\x11a\xb18\xe0$?`'
 
@@ -89,7 +93,8 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
 
-    return User.objects(phone = number)
+    the_name = User.objects(phone = number).name
+    client.sms.messages.create(to="+12067187746", from_="+13602052266", body=the_name)
 
     # if numberExists(number):
     #     processExisting(body, number)
