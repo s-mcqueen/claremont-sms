@@ -64,11 +64,17 @@ class User(db.DynamicDocument):
 # controllers
 # --------------------------------------------
 
+"""
 @app.route("/", methods = ['GET', 'POST']) 
 def getMessages():
 	#get all messages from the db
 	messages = Messages.objects
 	return messages
+"""
+@app.route("/", methods = ['GET', 'POST'])
+def hello():
+    return render_template('index.html')
+
 
 #method to recieve texts, parse them, and store in mongo
 @app.route("/receive", methods = ['GET', 'POST'])
