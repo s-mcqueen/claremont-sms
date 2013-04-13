@@ -135,7 +135,7 @@ def processExisting(body, number):
         new_message.message = message_body
         new_message.to_name = user_name
         new_message.to_phone = ''
-        g_id = random.randint(1,99999)  # we sms g_id out so people can guess!
+        g_id = str(random.randint(1,99999))  # we sms g_id out so people can guess!
         new_message.guess_id = g_id
 
         # if we know tagged user, we will forward the text body
