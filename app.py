@@ -1,8 +1,8 @@
 import tokens
-import flask from Flask, request, redirect
+from flask import Flask, request, redirect
 import twilio.twiml
 
-app = Flask
+app = Flask(__name__)
 
 @app.route("/", methods = ['GET', 'POST'])
 def hello():
