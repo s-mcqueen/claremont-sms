@@ -1,4 +1,16 @@
 import tokens
+import flask from Flask, request, redirect
+import twilio.twiml
 
-print tokens.twilio_id
-print tokens.twilio_token
+app = Flask
+
+@app.route("/", methods = ['GET', 'POST'])
+def hello():
+    ''' starter code '''
+    body = request.values.get('body')
+    resp = twilio.twiml.Response()
+    resp.sms(body)
+    return str(resp)
+
+if __name__ == "__main__":
+    app.run(debug = True)
