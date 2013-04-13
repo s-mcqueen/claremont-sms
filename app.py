@@ -95,13 +95,12 @@ def receive():
         processExisting(body, number)
 
     else:
-        print "yo"
         processNew(body, number)
 
 
 #check if number exists already in users DB
 def numberExists(phone_number):
-    print "phone " + str(len(User.objects(phone = phone_number).get()))
+    print "number " + str(User.objects(phone = phone_number))
     
     if (len(User.objects(phone = phone_number).get()) == 0):
         return False
@@ -110,7 +109,7 @@ def numberExists(phone_number):
 
 #checks if user exists in users DB
 def userExists(user_name):
-    print "user " + str(len(User.objects(name = user_name).get()))
+    print "user " + str(User.objects(name = user_name)
     if (len(User.objects(name = user_name).get()) == 0):
         return False
     else:
