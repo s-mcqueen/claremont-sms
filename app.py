@@ -5,7 +5,7 @@ import urllib
 import json
 import datetime
 #importing parse.py for text parsing
-#import parse
+import parse
 
 #---------------------------------------------
 # initialization
@@ -83,56 +83,71 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
 
-    # doesUserExist?
-    # 	valid message?
-    # 		get to number
-    # 			is tonumber in db??
-    # 				get message
-    # 				forward
-    # 	valid guess?
-    # 		get guess number
-    # 			is guess number in db?
-    # 				get guess name
-    # 				does it match?
-    # 				send something
-    # 	valid signup?
-    # 		tell tehm you are already here!
-    # 	valid stop?
-    # 		remove them
-    # else:
-    # 	valid signup?
-    # 		get signupname
-    # 		sign them up
-    # 	anything else:
-    # 		fuck you, sign up!
+    if numberExists(number):
+        processExisting(body, number)
 
+    else:
+        processNew(body, number)
 
-
-    #tell new_user to look in the User collection
-    new_user = User()
+    # #tell new_user to look in the User collection
+    # new_user = User()
     
-    #store the name and phone in Users
-    new_user.name = str(body)
-    new_user.phone = str(number)
+    # #store the name and phone in Users
+    # new_user.name = str(body)
+    # new_user.phone = str(number)
 
-    #save data in user collection
-    new_user.save()
-
-    print "exists: " + str(doesUserExist(number))
-
+    # #save data in user collection
+    # new_user.save()
 	
-    #sends back a text
-    resp = twilio.twiml.Response()
-    resp.sms(body)
-    return str(resp)
+    # #sends back a text
+    # resp = twilio.twiml.Response()
+    # resp.sms(body)
+    # return str(resp)
 
-def doesUserExist(phone_number):
+def numberExists(phone_number):
  	if User.objects(phone = phone_number) is None:
  		return False
  	else:
  		return True
 
  
+def processExisting(body, number):
+
+
+    if parse.validMessageRequest(body):
+        to_number = parse.getMessageTo(body)
+        if doesNumberExist(to_number):
+            message_body = parse.getMessageBody(body)
+
+            # forward the message
+
+    if parse.validGuessRequest(body):
+        guess_number = parse.getGuessNumber(body)
+        # check if guess_id is in db (function here)
+        # if (it is):
+            guess_name = parse.getGuessName(body)
+            # does guess_name match the db name associated with id
+
+            # send them "yes" or "no"
+
+    if parse.validSignupRequest(body):
+
+        # send sms: you're already signed up
+
+
+    if parse.validStopRequest(body):
+        # removed from db
+
+
+def processNew(body, number):
+    if parse.validSignupRequest(body):
+        new_name = parse.getSignupName(body)
+        # add new_name with "number" (above) to db
+
+        # send welcome text
+    else:
+        # reply: please sign up
+
 
 
 
