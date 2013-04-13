@@ -61,6 +61,10 @@ class User(db.DynamicDocument):
     phone = db.StringField(max_length=15, unique=True)
     created_at = db.DateTimeField(default=datetime.datetime.now)
     guess_counter = db.StringField(max_length=5)
+    meta = {
+        'indexes' : ['-created_at', 'name', 'phone', 'guess_counter']
+        'ordering' : ['-created_at']
+    }
 
 #---------------------------------------------
 # controllers
@@ -86,7 +90,7 @@ def receive():
     number = request.values.get('From')
 
     user = User.objects(phone = number)
-    print user.name
+    print user[0]
 
     # if numberExists(number):
     #     processExisting(body, number)
