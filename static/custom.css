@@ -1,6 +1,10 @@
 .span5 {
-/*	background-color: gray;
+/*	background-color:;
 */}
+
+#our-name {
+	background-color: #efefef;
+}
 
 
 .span7 {
@@ -15,13 +19,13 @@
 
 #signup {
 	border-radius: 3px;
-	background-color: rgba(57,60,61,0.8);
+	background-color: #666;
 
-	-moz-border-radius:3px; 
+	/*-moz-border-radius:3px; 
     -webkit-border-radius:3px; 
-    border-radius:3px; 
-    -webkit-box-shadow: 0 0 5px; 
-    border: 1px solid rgba(0,0,0,0.8);
+    border-radius:3px; */
+    /*-webkit-box-shadow: 0 0 5px; 
+    border: 1px solid rgba(0,0,0,0.8);*/
     color: white;
     text-rendering: optimizeLegibility;
     font-family: "Helvetica Neue", Helvetica;
@@ -30,13 +34,14 @@
 }
 
 #entry {
-
-	height: 80px;
+	background-color: #efefef;
+	height: 60px;
+	padding-left: 30px;
 }
 
 #entry2 {
 	background-color: #C2C2C2;
-	height: 80px;
+	min-height: 200px;
 	padding-left: 30px;
 }
 
