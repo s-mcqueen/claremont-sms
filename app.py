@@ -100,22 +100,24 @@ def receive():
 
 #check if number exists already in users DB
 def numberExists(phone_number):
-    print "number " + str(User.objects(phone = phone_number))
     
-
-    if (User.objects(phone = phone_number) == False):
+    try:
+        user = User.objects(phone = phone_number).get()
+    except DoesNotExist:
         return False
     else:
         return True
 
 #checks if user exists in users DB
 def userExists(user_name):
-    print "user " + str(User.objects(name = user_name))
     
-    if (User.objects(name = user_name) == False):
+    try:
+        user = User.objects(name = user_name).get()
+    except DoesNotExist:
         return False
     else:
         return True
+
 
 
 #process the text if the user exists in our db
