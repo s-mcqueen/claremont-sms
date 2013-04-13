@@ -85,15 +85,15 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
 
-	print "body: " + str(body)
-	print "number: " + str(number)
+    print "body: " + str(body)
+    print "number: " + str(number)
 
     '''TODO: add in parsing logic'''
     
     #store the name and phone in Users
-	new_user = User()
-	new_user.name = str(body)
-	new_user.phone = str(number)
+    new_user = User()
+    new_user.name = str(body)
+    new_user.phone = str(number)
 
     #save data in user collection
     new_user.save()
