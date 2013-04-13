@@ -62,8 +62,8 @@ class Message(Document):
 class User(db.DynamicDocument):
 	#name, phone, created_at fields
 	name = db.StringField(max_length=255, unique=True)
-	phone = db.IntField(required=True,unique=True)
-	created_at = db.DateTimeField(default=datetime.datetime.now,required=True)
+	phone = db.IntField(unique=True)
+	created_at = db.DateTimeField(default=datetime.datetime.now)
 	"""
 	def __unicode__(self):
 		return self.name
@@ -73,8 +73,6 @@ class User(db.DynamicDocument):
 		'ordering' : ['-created_at']
 	}
 	"""
-
-
 
 #---------------------------------------------
 # controllers
@@ -90,10 +88,10 @@ def receive():
     '''TODO: add in parsing logic'''
     
     #store the name and phone in Users
-    
-    new_user = User()
-    new_user.name = str(body)
-    new_user.phone = int(number)
+    if number is not none:
+    	new_user = User()
+    	new_user.name = str(body)
+    	new_user.phone = int(number)
 
 
     print "name: " + new_user.name
