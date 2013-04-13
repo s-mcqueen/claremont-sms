@@ -1,11 +1,12 @@
 import os
 from flask import Flask, request, redirect, render_template, session, url_for, send_from_directory
 import twilio.twiml
+from twilio.rest import TwilioRestClient
 import urllib
 import json
 import datetime
 #importing parse.py for text parsing
-#import parse
+import parse
 
 #---------------------------------------------
 # initialization
@@ -19,6 +20,9 @@ app.config.update(
 
 twilio_id = "AC65492579e6a94943a72ebed4c4f4b788"
 twilio_token = "81ebc16c6a6fd61bf25631ee0b649e01"
+
+client = TwilioRestClient(twilio_id, twilio_token)
+
 
 app.config["SECRET_KEY"] = '\xe6yM\xbc\xe2\x04/)\xc4@~t\x0c?\xbfr\x11a\xb18\xe0$?`'
 
@@ -35,52 +39,48 @@ DB_USERNAME = 'evan'
 DB_PASSWORD = 'smegma69'
 DB_HOST_ADDRESS = 'ds031857.mongolab.com:31857/claremont-sms-db'
 
-app.config["MONGODB_DB"] = DB_NAME
+app.config["MONGODB_DB"] = DB_NAME 
 connect(DB_NAME, host='mongodb://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_HOST_ADDRESS)
 db = MongoEngine(app)
 
 #---------------------------------------------
 # models
 # --------------------------------------------
-"""
+
 #class to hold the message fields
-class Message(Document):
+class Message(db.DynamicDocument):
 
-	structure = {
-		'from_name' : basestring,
-		'from_phone' : basestring,
-		'message' : basestring,
-		'to_name' : basestring,
-		'created_at': datetime.datetime
-	}
+    from_name = db.StringField(max_length=255)
+    from_phone = db.StringField(max_length=15)
+    message = db.StringField(max_length=400)
+    to_name = db.StringField(max_length=255)
+    to_phone = db.StringField(max_length=15)
+    created_at = db.DateTimeField(default=datetime.datetime.now)
+    guess_id = db.StringField(max_length=5)
 
-	#make created_at get filled automatically
-	default_values = {'created_at': datetime.datetime.utcnow}
-	use_dot_notation = True
-"""
 #class to hold the user fields
 class User(db.DynamicDocument):
-	#name, phone, created_at fields
-	name = db.StringField(max_length=255, unique=True)
-	phone = db.StringField(max_length=25, unique=True)
-	created_at = db.DateTimeField(default=datetime.datetime.now)
-	"""
-	def __unicode__(self):
-		return self.name
 
-	meta = {
-		'indexes' : ['-created_at', 'name', 'phone'],
-		'ordering' : ['-created_at']
-	}
-	"""
-
+    name = db.StringField(max_length=255, unique=True)
+    phone = db.StringField(max_length=15, unique=True)
+    created_at = db.DateTimeField(default=datetime.datetime.now)
+    guess_counter = db.StringField(max_length=5)
+    
 #---------------------------------------------
 # controllers
 # --------------------------------------------
 
+"""
+@app.route("/", methods = ['GET', 'POST']) 
+def getMessages():
+	#get all messages from the db
+	messages = Messages.objects
+	return messages
+"""
 @app.route("/", methods = ['GET', 'POST'])
 def hello():
     return render_template('index.html')
+
 
 #method to recieve texts, parse them, and store in mongo
 @app.route("/receive", methods = ['GET', 'POST'])
@@ -89,23 +89,102 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
 
-    print "body: " + str(body)
-    print "number: " + str(number)
+    if numberExists(number):
+        processExisting(body, number)
 
-    '''TODO: add in parsing logic'''
+    # else:
+    #     processNew(body, number)
+
+    # #tell new_user to look in the User collection
+    # new_user = User()
     
-    #store the name and phone in Users
-    new_user = User()
-    new_user.name = str(body)
-    new_user.phone = str(number)
+    # #store the name and phone in Users
+    # new_user.name = str(body)
+    # new_user.phone = str(number)
 
-    #save data in user collection
-    new_user.save()
-	
+    # #save data in user collection
+    # new_user.save()
+
     #sends back a text
-    resp = twilio.twiml.Response()
-    resp.sms(body)
-    return str(resp)
+    # resp = twilio.twiml.Response()
+    # resp.sms(body)
+    # return str(resp)
+
+#check if number exists already in users DB
+def numberExists(phone_number):
+ 	if User.objects(phone = phone_number) is None:
+ 		return False
+ 	else:
+ 		return True
+
+#checks if user exists in users DB
+def userExists(user_name):
+	if User.objects(name = user_name) is None:
+		return False
+	else:
+		return True
+
+
+#process the text if the user exists in our db
+def processExisting(body, number):
+
+    # if this looks like a message
+    if parse.validMessageRequest(body):
+
+        user_name = parse.getMessageTo(body)
+        message_body = parse.getMessageBody(body)
+
+        # this is a valid message, so we will set up a database entry
+        new_message = Message()
+        new_message.from_name = User.objects(phone = number).get().name
+        new_message.from_phone = number
+        new_message.message = message_body
+        new_message.to_name = user_name
+        new_message.to_phone = ''
+
+        # if we know tagged user, we will send the text body
+        if userExists(user_name):
+            # store our phone number
+            to_number = (User.objects(name = user_name)).get().phone
+            new_message.to_phone = to_number
+
+            # send the text! 
+            client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
+
+        new_message.save()
+
+
+    # if parse.validGuessRequest(body):
+    #     guess_number = parse.getGuessNumber(body)
+    #     # check if guess_id is in db (function here)
+    #     # if (it is):
+    #         guess_name = parse.getGuessName(body)
+
+    #         # does guess_name match the db name associated with id
+
+    #         # send them "yes" or "no"
+
+    # if parse.validSignupRequest(body):
+
+    #     # send sms: you're already signed up
+
+
+    # if parse.validStopRequest(body):
+    #     # removed from db
+
+
+# def processNew(body, number):
+#     if parse.validSignupRequest(body):
+#         new_name = parse.getSignupName(body)
+#         # add new_name with "number" (above) to db
+
+#         # send welcome text
+#     else:
+#         # reply: please sign up
+
+
+
+
 
 #---------------------------------------------
 # launch
@@ -114,5 +193,4 @@ def receive():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
-
 
