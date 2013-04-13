@@ -50,6 +50,7 @@ class Message(db.DynamicDocument):
 	from_phone = db.StringField(max_length=15)
 	message = db.StringField(max_length=400)
 	to_name = db.StringField(max_length=255)
+	to_phone = db.StringField(max_length=15)
 	created_at = db.DateTimeField(default=datetime.datetime.now)
 	guess_id = db.StringField(max_length=5)
 
@@ -120,7 +121,7 @@ def receive():
 
     print "exists: " + str(doesUserExist(number))
 
-	
+
     #sends back a text
     resp = twilio.twiml.Response()
     resp.sms(body)
