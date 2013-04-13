@@ -78,8 +78,11 @@ class User(db.DynamicDocument):
 # controllers
 # --------------------------------------------
 
-#method to recieve texts, parse them, and store in mongo
 @app.route("/", methods = ['GET', 'POST'])
+    return render_template(index.html)
+
+#method to recieve texts, parse them, and store in mongo
+@app.route("/receive", methods = ['GET', 'POST'])
 def receive(): 
 	#store the text body and phone num
     body = request.values.get('Body')
