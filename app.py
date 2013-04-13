@@ -44,7 +44,7 @@ db = MongoEngine(app)
 # --------------------------------------------
 
 #class to hold the message fields
-class Message(Document):
+class Message(db.DynamicDocument):
 
 	from_name = db.StringField(max_length=255)
 	from_phone = db.StringField(max_length=15)
@@ -126,7 +126,7 @@ def receive():
     resp.sms(body)
     return str(resp)
 
- def doesUserExist(phone_number):
+def doesUserExist(phone_number):
  	if User.objects(phone = phone_number) is None:
  		return False
  	else:
