@@ -15,12 +15,19 @@
 }
 
 #signup {
-
+	border-radius: 3px;
+	background-color: gray;
+	padding-left: 20px;
+	padding-top: 20px;
+	padding-right: 20px;
 }
 
 #entry {
 	background-color: blue;
 	height: 80px;
+	padding-left: 20px;
+	padding-top: 20px;
+	padding-right: 20px;
 }
 
 #entry2 {

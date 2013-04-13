@@ -78,9 +78,11 @@ def getMessages():
 	messages = Messages.objects
 	return messages
 """
-@app.route("/", methods = ['GET', 'POST'])
-def hello():
-    return render_template('index.html')
+@app.route("/", methods = ['GET'])
+def display():
+    message = Message.objects(from_name='seanmcqueen').get()
+    recipient = Message.objects(from_name='seanmcqueen').get()
+    return render_template('index.html', message=message, name=recipient)
 
 
 #method to recieve texts, parse them, and store in mongo
