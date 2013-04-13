@@ -159,16 +159,14 @@ def processExisting(body, number):
         # we grab the guess the user sends us
         guess_number = parse.getGuessNumber(body)
 
-        # check if it matches something in our system
-        if guessExists(guess_number):
-            # if it does then we that actual name
-            actual_name = Message.objects(guess_id = guess_number).get().from_name
-            guess_name = parse.getGuessName(body)
-            
-            if (guess_name == actual_name):
-                to_number = number
-                message_body = "Yep. You guessed it."
-                client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
+        # if it does then we that actual name
+        actual_name = Message.objects(guess_id = guess_number).get().from_name
+        guess_name = parse.getGuessName(body)
+        
+        if (guess_name == actual_name):
+            to_number = number
+            message_body = "Yep. You guessed it."
+            client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
         else:
             to_number = number
             message_body = "Nope, you guessed wrong."
