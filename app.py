@@ -88,7 +88,7 @@ def receive():
     '''TODO: add in parsing logic'''
     
     #store the name and phone in Users
-    if number is not none:
+    if number is not None:
     	new_user = User()
     	new_user.name = str(body)
     	new_user.phone = int(number)
