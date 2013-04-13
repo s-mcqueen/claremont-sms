@@ -65,11 +65,7 @@ class User(db.DynamicDocument):
     phone = db.StringField(max_length=15, unique=True)
     created_at = db.DateTimeField(default=datetime.datetime.now)
     guess_counter = db.StringField(max_length=5)
-    meta = {
-        'indexes' : ['-created_at', 'name', 'phone', 'guess_counter'],
-        'ordering' : ['-created_at']
-    }
-
+    
 #---------------------------------------------
 # controllers
 # --------------------------------------------
@@ -93,16 +89,18 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
 
-    new_user = User()
-    new_user.name = str(body)
-    new_user.phone = str(number)
-    new_user.save()
+    user = User()
+    user.name = "Sean McQueen"
+    user.phone = "+12067187746"
+    user.save()
 
-    the_name = User.objects(phone = number).name
-    client.sms.messages.create(to="+12067187746", from_="+13602052266", body=the_name)
+    user = User()
+    user.name = "Evan Casey"
+    user.phone = "+13038082955"
+    user.save()
 
-    # if numberExists(number):
-    #     processExisting(body, number)
+    if numberExists(number):
+        processExisting(body, number)
 
     # else:
     #     processNew(body, number)
@@ -135,6 +133,66 @@ def userExists(user_name):
 		return False
 	else:
 		return True
+
+
+#process the text if the user exists in our db
+def processExisting(body, number):
+
+    # if this looks like a message
+    if parse.validMessageRequest(body):
+
+        user_name = parse.getMessageTo(body)
+        message_body = parse.getMessageBody(body)
+
+        # this is a valid message, so we will set up a database entry
+        new_message = Message()
+        new_message.from_name = User.objects(phone = number)
+        new_message.from_phone = number
+        new_message.message = message_body
+        new_message.to_name = user_name
+        new_message.to_phone = ''
+
+        # if we know tagged user, we will send the text body
+        if userExists(user_name):
+            # store our phone number
+            to_number = (User.objects(name = user_name)).get().to_phone
+            new_message.to_phone = to_number
+
+            # send the text! 
+            client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
+
+        new_message.save()
+
+
+    # if parse.validGuessRequest(body):
+    #     guess_number = parse.getGuessNumber(body)
+    #     # check if guess_id is in db (function here)
+    #     # if (it is):
+    #         guess_name = parse.getGuessName(body)
+
+    #         # does guess_name match the db name associated with id
+
+    #         # send them "yes" or "no"
+
+    # if parse.validSignupRequest(body):
+
+    #     # send sms: you're already signed up
+
+
+    # if parse.validStopRequest(body):
+    #     # removed from db
+
+
+# def processNew(body, number):
+#     if parse.validSignupRequest(body):
+#         new_name = parse.getSignupName(body)
+#         # add new_name with "number" (above) to db
+
+#         # send welcome text
+#     else:
+#         # reply: please sign up
+
+
 
 
 
