@@ -7,6 +7,7 @@ tokens.py
 *.pyo
 
 env
+venv
 env*
 dist
 bin
