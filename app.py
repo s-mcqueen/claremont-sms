@@ -85,8 +85,8 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
 
-    print "body: " + body
-    print "number: " + number
+	print "body: " + body
+	print "number: " + number
 
     '''TODO: add in parsing logic'''
     
