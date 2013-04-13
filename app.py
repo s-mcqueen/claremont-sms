@@ -46,20 +46,21 @@ db = MongoEngine(app)
 #class to hold the message fields
 class Message(db.DynamicDocument):
 
-	from_name = db.StringField(max_length=255)
-	from_phone = db.StringField(max_length=15)
-	message = db.StringField(max_length=400)
-	to_name = db.StringField(max_length=255)
-	to_phone = db.StringField(max_length=15)
-	created_at = db.DateTimeField(default=datetime.datetime.now)
-	guess_id = db.StringField(max_length=5)
+    from_name = db.StringField(max_length=255)
+    from_phone = db.StringField(max_length=15)
+    message = db.StringField(max_length=400)
+    to_name = db.StringField(max_length=255)
+    to_phone = db.StringField(max_length=15)
+    created_at = db.DateTimeField(default=datetime.datetime.now)
+    guess_id = db.StringField(max_length=5)
 
 #class to hold the user fields
 class User(db.DynamicDocument):
 
-	name = db.StringField(max_length=255, unique=True)
-	phone = db.StringField(max_length=15, unique=True)
-	created_at = db.DateTimeField(default=datetime.datetime.now)
+    name = db.StringField(max_length=255, unique=True)
+    phone = db.StringField(max_length=15, unique=True)
+    created_at = db.DateTimeField(default=datetime.datetime.now)
+    guess_counter = db.StringField(max_length=5)
 
 #---------------------------------------------
 # controllers
@@ -84,11 +85,14 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
 
-    if numberExists(number):
-        processExisting(body, number)
+    print User.objects(phone = number).name
+    
 
-    else:
-        processNew(body, number)
+    # if numberExists(number):
+    #     processExisting(body, number)
+
+    # else:
+    #     processNew(body, number)
 
     # #tell new_user to look in the User collection
     # new_user = User()
@@ -118,59 +122,6 @@ def userExists(user_name):
 		return False
 	else:
 		return True
-
-#process the text if the user exists in our db
-def processExisting(body, number):
-
-	new_message = Message()
-	new_message.from_name = User.objects(phone = number)
-	new_message.from_phone = number
-
-
-    if parse.validMessageRequest(body):
-        #name of the person being tagged
-        user_name = parse.getMessageTo(body)
-        
-        if userExists(user_name):
-
-            message_body = parse.getMessageBody(body)
-            new_message.massage = message_body
-
-
-
-            # forward the message
-            # TODO
-            
-            new_message.save()
-
-    if parse.validGuessRequest(body):
-        guess_number = parse.getGuessNumber(body)
-        # check if guess_id is in db (function here)
-        # if (it is):
-            guess_name = parse.getGuessName(body)
-
-            # does guess_name match the db name associated with id
-
-            # send them "yes" or "no"
-
-    if parse.validSignupRequest(body):
-
-        # send sms: you're already signed up
-
-
-    if parse.validStopRequest(body):
-        # removed from db
-
-
-def processNew(body, number):
-    if parse.validSignupRequest(body):
-        new_name = parse.getSignupName(body)
-        # add new_name with "number" (above) to db
-
-        # send welcome text
-    else:
-        # reply: please sign up
-
 
 
 
