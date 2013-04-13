@@ -103,7 +103,7 @@ def numberExists(phone_number):
     
     try:
         user = User.objects(phone = phone_number).get()
-    except Exception, DoesNotExist:
+    except Exception, e:
         return False
     else:
         return True
@@ -113,7 +113,7 @@ def userExists(user_name):
     
     try:
         user = User.objects(name = user_name).get()
-    except Exception, DoesNotExist:
+    except Exception, e:
         return False
     else:
         return True
