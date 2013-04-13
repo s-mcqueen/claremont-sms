@@ -40,6 +40,43 @@ connect(DB_NAME, host='mongodb://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_
 db = MongoEngine(app)
 
 #---------------------------------------------
+# models
+# --------------------------------------------
+"""
+#class to hold the message fields
+class Message(Document):
+
+	structure = {
+		'from_name' : basestring,
+		'from_phone' : basestring,
+		'message' : basestring,
+		'to_name' : basestring,
+		'created_at': datetime.datetime
+	}
+
+	#make created_at get filled automatically
+	default_values = {'created_at': datetime.datetime.utcnow}
+	use_dot_notation = True
+"""
+#class to hold the user fields
+class User(db.DynamicDocument):
+	#name, phone, created_at fields
+	name = db.StringField(max_length=255, unique=True)
+	phone = db.IntField(required=True,unique=True)
+	created_at = db.DateTimeField(default=datetime.datetime.now,required=True)
+	"""
+	def __unicode__(self):
+		return self.name
+
+	meta = {
+		'indexes' : ['-created_at', 'name', 'phone'],
+		'ordering' : ['-created_at']
+	}
+	"""
+
+
+
+#---------------------------------------------
 # controllers
 # --------------------------------------------
 
@@ -51,10 +88,10 @@ def receive():
     number = request.values.get('From')
 
     '''TODO: add in parsing logic'''
-    '''
+    
     #store the name and phone in Users
     
-    new_user = collection_users.Users()
+    new_user = User()
     new_user.name = str(body)
     new_user.phone = str(number)
 
@@ -63,7 +100,7 @@ def receive():
 
     #save data in user collection
     new_user.save()
-	'''
+	
     #sends back a text
     resp = twilio.twiml.Response()
     resp.sms(body)
