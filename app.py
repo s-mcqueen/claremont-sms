@@ -194,14 +194,16 @@ def processExisting(body, number):
 
 
 
-def processNew(body, number):
-    if parse.validSignupRequest(body):
-        new_name = parse.getSignupName(body)
-        # add new_name with "number" (above) to db
+# def processNew(body, number):
+#     if parse.validSignupRequest(body):
+#         new_name = parse.getSignupName(body)
 
-        # send welcome text
-    else:
-        # reply: please sign up
+#         # add new_name with "number" (above) to db
+
+#         # send welcome text
+#     else:
+        
+#         # reply: please sign up
 
 
 
