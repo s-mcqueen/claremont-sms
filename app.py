@@ -93,8 +93,8 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
 
-    the_name = User.objects(phone = number).name
-    client.sms.messages.create(to="+12067187746", from_="+13602052266", body=the_name)
+    # the_name = User.objects(phone = number).name
+    client.sms.messages.create(to="+12067187746", from_="+13602052266", body=number)
 
     # if numberExists(number):
     #     processExisting(body, number)
