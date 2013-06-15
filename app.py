@@ -90,6 +90,10 @@ def receive():
 	#store the text body and phone num
     body = request.values.get('Body')
     number = request.values.get('From')
+    print "testing with print outs"
+    print body
+    print number
+
 
     if numberExists(number):
         processExisting(body, number)
@@ -209,9 +213,6 @@ def processNew(body, number):
         to_number = number
         message_body = "Text 'SIGNUP: Firstname Lastname' to join Claremont SMS!" 
         client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
-
-
-
 
 
 #---------------------------------------------
