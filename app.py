@@ -14,7 +14,6 @@ import random
 # --------------------------------------------
 
 app = Flask(__name__)
-
 app.config.update(
     DEBUG = True,
 )
