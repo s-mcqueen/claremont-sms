@@ -80,17 +80,19 @@ def getMessages():
 """
 @app.route("/", methods = ['GET'])
 def display():
+    print "printing: on start"
     messages = list(Message.objects())
     return render_template('index.html', posts = messages)
-    print "printing: on start"
+    
 
 #method to recieve texts, parse them, and store in mongo
 @app.route("/receive", methods = ['GET', 'POST'])
 def receive(): 
+    print "printing: on recieve"
 	#store the text body and phone num
     body = request.values.get('Body')
     number = request.values.get('From')
-    print "printing: on recieve"
+    
     print body
     print number
 
