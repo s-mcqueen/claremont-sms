@@ -82,7 +82,7 @@ def getMessages():
 def display():
     messages = list(Message.objects())
     return render_template('index.html', posts = messages)
-
+    print "printing: on start"
 
 #method to recieve texts, parse them, and store in mongo
 @app.route("/receive", methods = ['GET', 'POST'])
@@ -90,9 +90,9 @@ def receive():
 	#store the text body and phone num
     body = request.values.get('Body')
     number = request.values.get('From')
-    # print "testing with print outs"
-    # print body
-    # print number
+    print "printing: on recieve"
+    print body
+    print number
 
 
     if numberExists(number):
