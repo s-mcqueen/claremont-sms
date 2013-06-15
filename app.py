@@ -90,9 +90,9 @@ def receive():
 	#store the text body and phone num
     body = request.values.get('Body')
     number = request.values.get('From')
-    print "testing with print outs"
-    print body
-    print number
+    # print "testing with print outs"
+    # print body
+    # print number
 
 
     if numberExists(number):
