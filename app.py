@@ -87,7 +87,6 @@ def display():
 
 #method to recieve texts, parse them, and store in mongo
 @app.route("/receive", methods = ['GET', 'POST'])
-print "printing: on recieve"
 def receive(): 
     print "printing: on recieve"
 	#store the text body and phone num
