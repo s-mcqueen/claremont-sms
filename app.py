@@ -17,7 +17,7 @@ app = Flask(__name__)
 
 app.config.update(
     DEBUG = True,
-)h
+)
 
 client = TwilioRestClient(TWILIO_ID, TWILIO_TOKEN)
 
