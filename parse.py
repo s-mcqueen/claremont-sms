@@ -115,10 +115,8 @@ def getSignupName(sms_body):
         has returned True '''    
     sms = colonSplit(sms_body)
 
-    # make name lower case and remove spaces
-    nam = sms[1].lower().replace(' ', '')
-    
-    return name
+    # make name lower case and remove spaces   
+    return sms[1].lower().replace(' ', '')
 
 
 # Stop Validity

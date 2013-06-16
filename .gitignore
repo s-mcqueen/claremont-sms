@@ -5,6 +5,7 @@
 *.pyc
 *.pyo
 
+tokens.py
 env
 venv
 env*

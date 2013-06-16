@@ -6,8 +6,8 @@ import urllib
 import json
 import datetime
 import random
-from tokens import * # twilio tokens
-import parse # for text parsing
+from tokens import TWILIO_ID, TWILIO_TOKEN, TWILIO_NUM
+import parse # collection of methods for text parsing
 
 #---------------------------------------------
 # initialization
@@ -17,7 +17,7 @@ app = Flask(__name__)
 
 app.config.update(
     DEBUG = True,
-)
+)h
 
 client = TwilioRestClient(TWILIO_ID, TWILIO_TOKEN)
 
