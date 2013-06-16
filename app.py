@@ -19,15 +19,15 @@ app.config.update(
     DEBUG = True,
 )
 
-twilio_num = 3038163058
+twilio_num = "+13038163058"
 
 twilio_id = "ACfdd41e08b900b330579f39feb9366f4d"
-twilio_token = "81ebc16c6a6fd61bf25631ee0b649e01"
+twilio_token = "d951d114074f6d3aeb672672383f8ab3"
 
 client = TwilioRestClient(twilio_id, twilio_token)
 
 
-app.config["SECRET_KEY"] = '\xe6yM\xbc\xe2\x04/)\xc4@~t\x0c?\xbfr\x11a\xb18\xe0$?`'
+# app.config["SECRET_KEY"] = '\xe6yM\xbc\xe2\x04/)\xc4@~t\x0c?\xbfr\x11a\xb18\xe0$?`'
 
 #---------------------------------------------
 # database
@@ -73,13 +73,6 @@ class User(db.DynamicDocument):
 # controllers
 # --------------------------------------------
 
-"""
-@app.route("/", methods = ['GET', 'POST']) 
-def getMessages():
-	#get all messages from the db
-	messages = Messages.objects
-	return messages
-"""
 @app.route("/", methods = ['GET'])
 def display():
     print "printing: on start"
@@ -95,8 +88,8 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
     
-    print body
-    print number
+    print "body: %s" % body
+    print "number: %s" % number
 
 
     if numberExists(number):
