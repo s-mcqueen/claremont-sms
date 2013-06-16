@@ -6,7 +6,14 @@ import re
 
 def colonSplit(sms_body):
     ''' helper function that splits strings '''
+    
     return sms_body.split(":", 1) # split on the first ":"
+
+def formatText(sms_body):
+    ''' helper function that removes spaces and formats
+        to lower case'''
+
+    return sms_body.lower().replace(' ', '')
 
 #---------------------------------------------
 # message validity
@@ -21,13 +28,10 @@ def validMessageRequest(sms_body):
         # there is no colon
         return False
     
-    name_section = sms[0]
-
-    # make name lower case and remove spaces
-    name_section = name_section.lower().replace(' ', '')
+    name = formatText(sms[0])
 
     # only return true if name_section only has letters
-    for c in name_section:
+    for c in name:
         if c not in 'qwertyuiopasdfghjklzxcvbnm':
             return False
 
@@ -41,17 +45,17 @@ def getMessageTo(sms_body):
         has returned True '''
 
     sms = colonSplit(sms_body)
-    name_section = sms[0]
+    name = formatText(sms[0])
    
-    # make name lower case and remove spaces
-    name_section = name_section.lower().replace(' ', '')
-    return name_section
+    return name
 
 def getMessageBody(sms_body):
     ''' this should NOT be called unless validMessageRequest
         has returned True '''
+
     sms = colonSplit(sms_body)
     message_section = sms[1]
+
     return message_section
 
 #---------------------------------------------
@@ -61,14 +65,14 @@ def getMessageBody(sms_body):
 def validGuessRequest(sms_body):
     ''' returns true if the sms is formatted like a guess
         ie: "23: first last" '''
+
     sms = colonSplit(sms_body)
+
     if (len(sms) < 2):
         # there is no colon
         return False
-    guess_section = sms[0]
 
-    # make name lower case and remove spaces
-    guess_section = guess_section.replace(' ', '')
+    guess_section = formatText(sms[0])
 
     # only return true if guess_section only has digits
     for c in guess_section:
@@ -80,11 +84,10 @@ def validGuessRequest(sms_body):
 def getGuessNumber(sms_body):
     ''' this should NOT be called unless validGuessRequest
         has returned True '''
+
     sms = colonSplit(sms_body)
-    guess_section = sms[0]
+    guess_section = sms[0].replace(' ', '')
    
-    # remove spaces
-    guess_section = guess_section.replace(' ', '')
     return guess_section
 
 def getGuessName(sms_body):

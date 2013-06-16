@@ -42,7 +42,7 @@ db = MongoEngine(app)
 # --------------------------------------------
 
 class Message(db.DynamicDocument):
-    '''class to hold the message fields'''
+    ''' class to hold the message fields'''
     from_name = db.StringField(max_length=255)
     from_phone = db.StringField(max_length=15)
     message = db.StringField(max_length=400)
@@ -52,7 +52,7 @@ class Message(db.DynamicDocument):
     guess_id = db.StringField(max_length=5) 
 
 class User(db.DynamicDocument):
-    '''class to hold the user fields'''
+    ''' class to hold the user fields'''
     name = db.StringField(max_length=255, unique=True)
     phone = db.StringField(max_length=15, unique=True)
     created_at = db.DateTimeField(default=datetime.datetime.now)
@@ -69,7 +69,7 @@ def display():
     
 @app.route("/receive", methods = ['GET', 'POST'])
 def receive(): 
-    '''method to recieve texts, parse them, and store in mongo'''
+    ''' method to recieve texts, parse them, and store in mongo'''
 
 	#store the text body and phone number
     body = request.values.get('Body')
@@ -82,7 +82,8 @@ def receive():
         processNew(body, number)
 
 def numberExists(phone_number):
-    '''checks if number exists in users db'''
+    ''' checks if number exists in users db'''
+
     try:
         user = User.objects(phone = phone_number).get()
     except Exception, e:
@@ -91,7 +92,8 @@ def numberExists(phone_number):
         return True
 
 def userExists(user_name):
-    '''check if user name exists in users db'''
+    ''' check if user name exists in users db'''
+
     try:
         user = User.objects(name = user_name).get()
     except Exception, e:
@@ -100,7 +102,7 @@ def userExists(user_name):
         return True
 
 def processExisting(body, number):
-    '''process the text if the user exists in our db'''
+    ''' process the text if the user exists in our db'''
 
     # if this looks like a message
     if parse.validMessageRequest(body):
