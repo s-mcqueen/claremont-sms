@@ -5,9 +5,9 @@ from twilio.rest import TwilioRestClient
 import urllib
 import json
 import datetime
-#importing parse.py for text parsing
-import parse
 import random
+import tokens # twilio tokens
+import parse # for text parsing
 
 #---------------------------------------------
 # initialization
@@ -19,15 +19,9 @@ app.config.update(
     DEBUG = True,
 )
 
-twilio_num = "+13038163058"
-
-twilio_id = "ACfdd41e08b900b330579f39feb9366f4d"
-twilio_token = "d951d114074f6d3aeb672672383f8ab3"
+TWILIO_NUM = "+13038163058"
 
 client = TwilioRestClient(twilio_id, twilio_token)
-
-
-# app.config["SECRET_KEY"] = '\xe6yM\xbc\xe2\x04/)\xc4@~t\x0c?\xbfr\x11a\xb18\xe0$?`'
 
 #---------------------------------------------
 # database
@@ -75,7 +69,7 @@ class User(db.DynamicDocument):
 
 @app.route("/", methods = ['GET'])
 def display():
-    print "printing: on start"
+    #pass in the collection of messages as a list
     messages = list(Message.objects())
     return render_template('index.html', posts = messages)
     
@@ -83,7 +77,6 @@ def display():
 #method to recieve texts, parse them, and store in mongo
 @app.route("/receive", methods = ['GET', 'POST'])
 def receive(): 
-    print "printing: on recieve"
 	#store the text body and phone num
     body = request.values.get('Body')
     number = request.values.get('From')
@@ -149,7 +142,7 @@ def processExisting(body, number):
             message_and_id = message_body + " (" + g_id + ")"
             
             # send the text! 
-            client.sms.messages.create(to=to_number, from_="+13602052266", body=message_and_id)
+            client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_and_id)
 
         new_message.save()
 
@@ -166,18 +159,18 @@ def processExisting(body, number):
         if (guess_name == actual_name):
             to_number = number
             message_body = "Yep. You guessed it."
-            client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
+            client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
         else:
             to_number = number
             message_body = "Nope, you guessed wrong."
-            client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
+            client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
 
 
     elif parse.validSignupRequest(body):
         to_number = number
         the_user = User.objects(phone = number).get().name
         message_body = "The phone number is already registered!"
-        client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
+        client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
 
 
     elif parse.validStopRequest(body):
@@ -188,7 +181,7 @@ def processExisting(body, number):
         to_number = number
         message_body = "Text 'STOP CLAREMONT SMS' to leave the service. \
                         Text 'Firstname Lastname: message' to text a friend." 
-        client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
+        client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
 
 
 
@@ -204,12 +197,12 @@ def processNew(body, number):
         to_number = number
         message_body = "Welcome! Text 'STOP CLAREMONT SMS' to leave the service. \
                         Text 'Firstname Lastname: message' to text a friend." 
-        client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
+        client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
 
     else:
         to_number = number
         message_body = "Text 'SIGNUP: Firstname Lastname' to join Claremont SMS!" 
-        client.sms.messages.create(to=to_number, from_="+13602052266", body=message_body)
+        client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
 
 
 #---------------------------------------------
