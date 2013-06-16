@@ -1,0 +1,82 @@
+/*
+    colors:
+    blue-greens: 1ABC9C, 16A085;
+    greens: 2ECC71, 27AE60;
+    blue: 3498DB, 2980B9;
+    purple: 9B59B6, 8E44AD;
+    dark blue: 34495E, 2C3E50;
+    yellow: F1C40F, F39C12;
+    orange: E67E22, D35400;
+    red: E74C3C, C0392B;
+    white: ECF0F1, BDC3C7;
+    dark grey: 95A5A6, 7F8C8D;
+
+
+*/
+
+body{
+    background-color: #16A085;
+}
+
+h1{
+    color: #ECF0F1;
+}
+
+#header{
+    height: 140px;
+    margin-top: 20px;
+}
+
+.container{
+}
+
+#signup {
+    border-radius: 8px 8px 6px 6px;
+	background-color: #34495E;
+    color: #F1C40F;
+    padding: 20px;
+}
+
+.login-form:before{
+    border-style: none;
+}
+
+.login-form .login-field{
+    width: 96%;
+}
+
+#newsfeed{
+    border-radius: 8px 8px 6px 6px;
+    height: 1000px;
+    background-color: #1ABC9C;
+}
+
+
+#entry {
+	background-color: #efefef;
+	height: 60px;
+	padding-left: 30px;
+}
+
+#entry2 {
+	background-color: #C2C2C2;
+	min-height: 200px;
+	padding-left: 30px;
+}
+
+
+
+.intro-header {
+	padding-left: 30px;
+	padding-right: 20px;
+}
+
+.intro-body {
+	padding-left: 30px;
+	padding-right: 30px;
+}
+
+.intro-footer {
+	padding: 20px;
+	padding-bottom: 20px;
+}
