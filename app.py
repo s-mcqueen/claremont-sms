@@ -42,9 +42,8 @@ db = MongoEngine(app)
 # models
 # --------------------------------------------
 
-#class to hold the message fields
 class Message(db.DynamicDocument):
-
+    '''class to hold the message fields'''
     from_name = db.StringField(max_length=255)
     from_phone = db.StringField(max_length=15)
     message = db.StringField(max_length=400)
@@ -53,9 +52,8 @@ class Message(db.DynamicDocument):
     created_at = db.DateTimeField(default=datetime.datetime.now)
     guess_id = db.StringField(max_length=5) 
 
-#class to hold the user fields
 class User(db.DynamicDocument):
-
+    '''class to hold the user fields'''
     name = db.StringField(max_length=255, unique=True)
     phone = db.StringField(max_length=15, unique=True)
     created_at = db.DateTimeField(default=datetime.datetime.now)
@@ -67,29 +65,25 @@ class User(db.DynamicDocument):
 
 @app.route("/", methods = ['GET'])
 def display():
-    #pass in the collection of messages as a list
     messages = list(Message.objects())
     return render_template('index.html', posts = messages)
     
-
-#method to recieve texts, parse them, and store in mongo
 @app.route("/receive", methods = ['GET', 'POST'])
 def receive(): 
-	#store the text body and phone num
+    '''method to recieve texts, parse them, and store in mongo'''
+
+	#store the text body and phone number
     body = request.values.get('Body')
     number = request.values.get('From')
     
-
     if numberExists(number):
         processExisting(body, number)
 
     else:
         processNew(body, number)
 
-
-#check if number exists already in users DB
 def numberExists(phone_number):
-    
+    '''checks if number exists in users db'''
     try:
         user = User.objects(phone = phone_number).get()
     except Exception, e:
@@ -97,9 +91,8 @@ def numberExists(phone_number):
     else:
         return True
 
-#checks if user exists in users DB
 def userExists(user_name):
-    
+    '''check if user name exists in users db'''
     try:
         user = User.objects(name = user_name).get()
     except Exception, e:
@@ -107,10 +100,8 @@ def userExists(user_name):
     else:
         return True
 
-
-
-#process the text if the user exists in our db
 def processExisting(body, number):
+    '''process the text if the user exists in our db'''
 
     # if this looks like a message
     if parse.validMessageRequest(body):
