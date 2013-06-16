@@ -106,10 +106,7 @@ def validSignupRequest(sms_body):
         # there is no colon, so we don't have a name
         return False
 
-    signup_section = sms[0]
-    signup_section = signup_section.lower().replace(' ', '')
-
-    if (signup_section == 'signup'):
+    if (sms[0].lower().replace(' ', '') == 'signup'):
         return True
     return False
 
@@ -118,12 +115,10 @@ def getSignupName(sms_body):
         has returned True '''    
     sms = colonSplit(sms_body)
 
-    name_section = sms[0]
-
     # make name lower case and remove spaces
-    name_section = name_section.lower().replace(' ', '')
+    nam = sms[1].lower().replace(' ', '')
     
-    return name_section
+    return name
 
 
 # Stop Validity
