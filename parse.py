@@ -125,9 +125,8 @@ def getSignupName(sms_body):
         has returned True '''    
 
     sms = colonSplit(sms_body)
-    signup_name = sms[1].lower().replace(' ', '')
+    signup_name = formatText(sms[1])
 
-    # make name lower case and remove spaces   
     return signup_name
 
 #---------------------------------------------
@@ -138,7 +137,7 @@ def validStopRequest(sms_body):
     ''' return true if the sms_body  '''
 
     # lower case and no spaces
-    stop_phrase = sms_body.lower().replace(' ', '')
+    stop_phrase = formatText(sms_body)
 
     if (stop_phrase == "stopclaremontsms"):
         return True
