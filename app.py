@@ -6,7 +6,7 @@ import urllib
 import json
 import datetime
 import random
-import tokens # twilio tokens
+from tokes import * # twilio tokens
 import parse # for text parsing
 
 #---------------------------------------------
@@ -81,9 +81,6 @@ def receive():
     body = request.values.get('Body')
     number = request.values.get('From')
     
-    print "body: %s" % body
-    print "number: %s" % number
-
 
     if numberExists(number):
         processExisting(body, number)
