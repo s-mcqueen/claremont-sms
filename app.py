@@ -14,7 +14,6 @@ import parse # collection of methods for text parsing
 # --------------------------------------------
 
 app = Flask(__name__)
-
 app.config.update(
     DEBUG = True,
 )

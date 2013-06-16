@@ -1,68 +1,48 @@
+<!-- 						<h4>
+						{% for post in posts %}
+   	
+   						 {{post.to_name}}: {{post.message}}
+						{% endfor %}
+						</h4>
+ -->
+
+
 
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Claremont SMS</title>
-	<link href="../static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	<link href="../static/custom.css" rel="stylesheet" media="screen">
+	<title></title>
+	<link href="../static/Flat-UI/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="../static/Flat-UI/css/flat-ui.css" rel="stylesheet">
+	<link href="../static/custom.css" rel="stylesheet">
 </head>
 <body>
-
 	<div class="container" id="header">
-		<div class="row">
-			<div class="span12">
-			</div>
-		</div>
+		<h1>Claremont SMS</h1>
+		<h3> Text your friends anonymously </h2>
+		
 	</div>
-
 	<div class="container">
 		<div class="row">
-			<div class="span5" id="our-name">
-				<h1>Claremont SMS</h1>
-
-						<!-- form -->
-						<div class="row">
-							<div class="span5" id="signup">
-								<p>Claremont SMS is a service that allows you to text your friends anonymously</p>
-									<form action="">
-										<fieldset >
-											<div class="controls controls-row">
-												<label>Your Name</label>
-												<input class="span2" type="text" placeholder="First">
-												<input class="span2" type="text" placeholder="Last">
-											</div>
-											<label>Your Phone Number</label>
-												<div class="input-prepend">
-							  						<span class="add-on">+</span>
-							  						<input class="span2" id="appendedPrependedInput" type="text" placeholder="1-555-555-555">
-							  					</div>
-							  				</br>
-							  				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#intro">Create Account</button>
-										</fieldset>
-									</form>
-							</div> 
+			<div class="span5">
+				<div id="signup">
+					<div class="login-form">
+						<div class="control-group">
+							<input type="text" class="login-field" value placeholder="full name" id="login-name">
 						</div>
-			</div>
+						<div class="control-group">
+							<input type="text" class="login-field" value placeholder="phone number" id="login-name">
 
-			<div class="span7">
-				<div class="row">
-					<div class="span7" id="entry">
-						<h2>entries</h2>
-					</div>
-					<div class="span7" id="entry2">
-						
-						<h4>
-						{% for post in posts %}
-   	
-   						 {{post.to_name}}: {{post.message}}
-						<br/>
-						{% endfor %}
-						</h4>
-						
+						</div>
+				  		<button type="button" class="btn btn-primary btn-large btn-block" data-toggle="modal" data-target="#intro">Create Account</button>
 					</div>
 				</div>
 			</div>
+			<div class="span7" id="newsfeed">
+								
+			</div> 
 		</div>
+	</div>
 
 	</div>
 
