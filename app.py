@@ -6,7 +6,7 @@ import urllib
 import json
 import datetime
 import random
-from tokes import * # twilio tokens
+from tokens import * # twilio tokens
 import parse # for text parsing
 
 #---------------------------------------------
@@ -19,9 +19,7 @@ app.config.update(
     DEBUG = True,
 )
 
-TWILIO_NUM = "+13038163058"
-
-client = TwilioRestClient(twilio_id, twilio_token)
+client = TwilioRestClient(TWILIO_ID, TWILIO_TOKEN)
 
 #---------------------------------------------
 # database
