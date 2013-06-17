@@ -66,10 +66,16 @@ class User(db.DynamicDocument):
 
 @app.route("/", methods = ['GET','POST'])
 def display():
+    ''' displays messages and processes signup form '''
+
     messages = list(Message.objects())
     form = forms.SignupForm()
+
     if form.validate_on_submit():
+        number = "+1" + form.number.data
+        requestSignup(number)
         return redirect("/")
+
     return render_template('index.html', posts = messages, form = form)
 
     
@@ -186,15 +192,16 @@ def processNew(body, number):
         user.phone = number
         user.save()
 
-        to_number = number
         message_body = "Welcome! Text 'STOP CLAREMONT SMS' to leave the service. \
                         Text 'Firstname Lastname: message' to text a friend." 
-        client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
+        client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
 
     else:
-        to_number = number
-        message_body = "Text 'SIGNUP: Firstname Lastname' to join Claremont SMS!" 
-        client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
+        requestSignup(number)
+       
+def requestSignup(number):
+    message_body = "Text 'SIGNUP: Firstname Lastname' to join Claremont SMS!" 
+    client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
 
 
 #---------------------------------------------

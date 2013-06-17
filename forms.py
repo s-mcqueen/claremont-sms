@@ -25,7 +25,10 @@ def user_must_not_exist(form,field):
 def number_must_not_exist(form,field):
 	''' ensures name doesn't already exist in db '''
 
-	if numberExists(field.data):
+	# add +1 at beginning number
+	number = "+1" + field.data
+
+	if numberExists(number):
 		raise ValidationError('This phone number has already exists!')
 
 class SignupForm(Form):
