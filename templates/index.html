@@ -28,6 +28,27 @@
 				<div id="signup">
 					<div class="login-form">
 						<div class="control-group">
+
+
+							<form action="" method="post" name="signup">
+		
+								{{form.hidden_tag()}}
+								
+									<p>
+										{{form.user(class="login-field", placeholder="full name", id="login-name")}}
+									</p>
+								
+								
+									<p>
+										{{form.number(class="login-field", placeholder="phone number", id="login-name")}}
+									</p>
+								</div>
+
+							  	<p><input type="submit" value="Create Account" class="btn btn-primary btn-large btn-block"></p>
+
+							</form>
+
+<!-- 
 							<input type="text" class="login-field" value placeholder="full name" id="login-name">
 						</div>
 						<div class="control-group">
@@ -35,12 +56,34 @@
 
 						</div>
 				  		<button type="button" class="btn btn-primary btn-large btn-block" data-toggle="modal" data-target="#intro">Create Account</button>
+ -->
+
+
+
 					</div>
 				</div>
 			</div>
 			<div class="span7" id="newsfeed">
+				<div id="entries">
 
-		
+					<div class="entry" id="entry-header">
+						<strong>Feed</strong>
+					</div>
+
+					{% for post in posts %}
+						
+						<div class="entry">
+							<div id="entry-tag">
+								<strong>{{post.to_name}}: </strong>
+							</div>
+							<div id="entry-content">
+								{{post.message}}
+							</div>
+						</div>
+						
+					{% endfor %}
+	
+				</div>
 			</div> 
 		</div>
 	</div>

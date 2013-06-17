@@ -8,6 +8,7 @@ import datetime
 import random
 from tokens import TWILIO_ID, TWILIO_TOKEN, TWILIO_NUM
 import parse # collection of methods for text parsing
+import forms # class to instantiate form object + validations
 
 #---------------------------------------------
 # initialization
@@ -17,6 +18,7 @@ app = Flask(__name__)
 app.config.update(
     DEBUG = True,
 )
+app.config.from_object('config')
 
 client = TwilioRestClient(TWILIO_ID, TWILIO_TOKEN)
 
@@ -25,48 +27,51 @@ client = TwilioRestClient(TWILIO_ID, TWILIO_TOKEN)
 # --------------------------------------------
 
 #import mongodb libraries
-# from mongoengine import connect
-# from flask.ext.mongoengine import MongoEngine
+from mongoengine import connect
+from flask.ext.mongoengine import MongoEngine
 
-# DB_NAME = 'claremont-sms-db'
-# DB_USERNAME = 'evan'
-# DB_PASSWORD = 'smegma69'
-# DB_HOST_ADDRESS = 'ds031857.mongolab.com:31857/claremont-sms-db'
+DB_NAME = 'claremont-sms-db'
+DB_USERNAME = 'evan'
+DB_PASSWORD = 'smegma69'
+DB_HOST_ADDRESS = 'ds031857.mongolab.com:31857/claremont-sms-db'
 
-# app.config["MONGODB_DB"] = DB_NAME 
-# connect(DB_NAME, host='mongodb://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_HOST_ADDRESS)
-# db = MongoEngine(app)
+app.config["MONGODB_DB"] = DB_NAME 
+connect(DB_NAME, host='mongodb://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_HOST_ADDRESS)
+db = MongoEngine(app)
 
 #---------------------------------------------
 # models
 # --------------------------------------------
 
-# class Message(db.DynamicDocument):
-#     ''' class to hold the message fields'''
-#     from_name = db.StringField(max_length=255)
-#     from_phone = db.StringField(max_length=15)
-#     message = db.StringField(max_length=400)
-#     to_name = db.StringField(max_length=255)
-#     to_phone = db.StringField(max_length=15)
-#     created_at = db.DateTimeField(default=datetime.datetime.now)
-#     guess_id = db.StringField(max_length=5) 
+class Message(db.DynamicDocument):
+    ''' class to hold the message fields'''
+    from_name = db.StringField(max_length=255)
+    from_phone = db.StringField(max_length=15)
+    message = db.StringField(max_length=400)
+    to_name = db.StringField(max_length=255)
+    to_phone = db.StringField(max_length=15)
+    created_at = db.DateTimeField(default=datetime.datetime.now)
+    guess_id = db.StringField(max_length=5) 
 
-# class User(db.DynamicDocument):
-#     ''' class to hold the user fields'''
-#     name = db.StringField(max_length=255, unique=True)
-#     phone = db.StringField(max_length=15, unique=True)
-#     created_at = db.DateTimeField(default=datetime.datetime.now)
-#     # guess_counter = db.StringField(max_length=5)
+class User(db.DynamicDocument):
+    ''' class to hold the user fields'''
+    name = db.StringField(max_length=255, unique=True)
+    phone = db.StringField(max_length=15, unique=True)
+    created_at = db.DateTimeField(default=datetime.datetime.now)
+    # guess_counter = db.StringField(max_length=5)
     
 #---------------------------------------------
 # controllers
 # --------------------------------------------
 
-@app.route("/", methods = ['GET'])
+@app.route("/", methods = ['GET','POST'])
 def display():
-    messages = [1,2,3]
-    # messages = list(Message.objects())
-    return render_template('index.html', posts = messages)
+    messages = list(Message.objects())
+    form = forms.SignupForm()
+    if form.validate_on_submit():
+        return redirect("/")
+    return render_template('index.html', posts = messages, form = form)
+
     
 @app.route("/receive", methods = ['GET', 'POST'])
 def receive(): 
@@ -170,7 +175,6 @@ def processExisting(body, number):
         message_body = "Text 'STOP CLAREMONT SMS' to leave the service. \
                         Text 'Firstname Lastname: message' to text a friend." 
         client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
-
 
 
 def processNew(body, number):

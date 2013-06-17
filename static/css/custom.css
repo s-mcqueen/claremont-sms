@@ -45,26 +45,42 @@ h1{
     width: 96%;
 }
 
-#newsfeed{
+#newsfeed {
     border-radius: 8px 8px 6px 6px;
     height: 1000px;
     background-color: #1ABC9C;
 }
 
-
-#entry {
-	background-color: #efefef;
-	height: 60px;
-	padding-left: 30px;
+#entries {
+    border-radius: 8px 8px 6px 6px;
+    height: 960px;
+    background-color: #ffffff;
+    margin: 20px 20px 20px 20px;
 }
 
-#entry2 {
-	background-color: #C2C2C2;
-	min-height: 200px;
-	padding-left: 30px;
+.entry {
+    height: 60px;
+    padding-left: 30px;
+    border-bottom: 1px solid #efefef;
 }
 
+#entry-header {
+    border-radius: 8px 8px 0px 0px;
+    height: 40px;
+    font-size: 24px;
+    line-height: 40px;
+    vertical-align: middle;
+}
 
+#entry-tag {
+    height: 15px;
+    font-size: 16px;
+}
+
+#entry-content {
+    height: 25px;
+    padding-top: 5px;
+}
 
 .intro-header {
 	padding-left: 30px;
@@ -78,5 +94,5 @@ h1{
 
 .intro-footer {
 	padding: 20px;
-	padding-bottom: 20px;
+    margin-bottom: 40px;
 }
