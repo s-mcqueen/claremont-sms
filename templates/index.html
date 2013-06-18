@@ -17,14 +17,14 @@
 			<div class="span5">
 				<div id="signup">
 					<div class="login-form">
-						<div class="control-group">
-
-							<input type="text" class="login-field" value placeholder="full name" id="login-name">
-						</div>
-						<div class="control-group">
-							<input type="text" class="login-field" value placeholder="phone number" id="login-name">
-
-						</div>
+						<form name="signup-form" id="signup-form" method="post">
+							<div class="control-group">
+								<input type="text" class="login-field" value placeholder="full name" name="user">
+							</div>
+							<div class="control-group">
+								<input type="text" class="login-field" value placeholder="phone number" name="number">
+							</div>
+						</form>
 				  		<button type="button" class="btn btn-primary btn-large btn-block">Create Account</button>
 
 			<!-- 	  		<form action="" method="post" name="signup">
@@ -114,12 +114,40 @@
 	<script src="../static/js/Flat-UI-bootstrap/bootstrap.min.js"></script>
 
 <script type="text/javascript">
+$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
 $(function(){
+
     $('button').on('click', function(e){
         e.preventDefault();
 
+
+        $.ajax({
+			type: "POST",
+			// contentType: "application/json; charset=utf-8",
+			url: $SCRIPT_ROOT + '/signup',
+			data: $('#signup-form').serialize(),
+			success: function (data) {
+				console.log(data.user);
+				console.log(data.number);
+			},
+  			dataType: "json"
+		});
+		// $.ajax({
+  //       	type: 'POST',
+  //       	url: $SCRIPT_ROOT + '/signup',
+  //       	contentType: "application/json; charset=utf-8",
+  //       	dataType: "json",
+  //           data: { 
+  //       		"user": $('input[name="user"]').val(),
+  //  				"number": $('input[name="number"]').val()
+  //  			}
+  //  		 });
+
         $("#intro").modal("show");
     });
+
+
 });
 
 </script>

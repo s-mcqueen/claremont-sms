@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, redirect, render_template, session, url_for, send_from_directory
+from flask import Flask, request, redirect, render_template, session, url_for, send_from_directory, jsonify
 import twilio.twiml
 from twilio.rest import TwilioRestClient
 import urllib
@@ -77,6 +77,15 @@ def display():
         return redirect("/")
 
     return render_template('index.html', posts = messages, form = form)
+
+@app.route("/signup", methods = ['GET','POST'])
+def signup():
+    ''' recieves signup form data via an ajax POST request '''
+
+    if request.method == "POST":
+        data = request.form
+        print data
+        return data
 
     
 @app.route("/receive", methods = ['GET', 'POST'])
