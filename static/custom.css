@@ -18,13 +18,13 @@ body{
     background-color: #16A085;
 }
 
-h1{
-    color: #ECF0F1;
+#header{
+/*    height: 140px;
+*/    margin-top: 20px;
 }
 
-#header{
-    height: 140px;
-    margin-top: 20px;
+#title{
+    color: #ECF0F1;
 }
 
 .container{
@@ -33,7 +33,12 @@ h1{
 #signup {
     border-radius: 8px 8px 6px 6px;
 	background-color: #34495E;
-    color: #F1C40F;
+    padding: 20px;
+    color: #ECF0F1;
+
+}
+
+#about-us{
     padding: 20px;
 }
 
@@ -47,23 +52,28 @@ h1{
 
 #newsfeed{
     border-radius: 8px 8px 6px 6px;
-    height: 1000px;
     background-color: #1ABC9C;
+    padding: 20px;
 }
 
-
-#entry {
-	background-color: #efefef;
-	height: 60px;
-	padding-left: 30px;
+#entries {
+    background-color: #edeff1;
+    border-radius: 5px;
 }
 
-#entry2 {
-	background-color: #C2C2C2;
-	min-height: 200px;
-	padding-left: 30px;
+.entry{
+    border-bottom: 1px #BDC3C7 solid;
+    padding: 10px;
 }
 
+.entry-name{
+    font-style: italic;
+    color: #3498DB;
+}
+
+#footer{
+    height: 100px;
+}
 
 
 .intro-header {
