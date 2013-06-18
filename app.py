@@ -8,6 +8,7 @@ import datetime
 import random
 from tokens import TWILIO_ID, TWILIO_TOKEN, TWILIO_NUM
 import parse # collection of methods for text parsing
+import forms # class to instantiate form object + validations
 
 #---------------------------------------------
 # initialization
@@ -17,6 +18,7 @@ app = Flask(__name__)
 app.config.update(
     DEBUG = True,
 )
+app.config.from_object('config')
 
 client = TwilioRestClient(TWILIO_ID, TWILIO_TOKEN)
 
@@ -62,10 +64,20 @@ class User(db.DynamicDocument):
 # controllers
 # --------------------------------------------
 
-@app.route("/", methods = ['GET'])
+@app.route("/", methods = ['GET','POST'])
 def display():
+    ''' displays messages and processes signup form '''
+
     messages = list(Message.objects())
-    return render_template('index.html', posts = messages)
+    form = forms.SignupForm()
+
+    if form.validate_on_submit():
+        number = "+1" + form.number.data
+        requestSignup(number)
+        return redirect("/")
+
+    return render_template('index.html', posts = messages, form = form)
+
     
 @app.route("/receive", methods = ['GET', 'POST'])
 def receive(): 
@@ -171,7 +183,6 @@ def processExisting(body, number):
         client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
 
 
-
 def processNew(body, number):
     if parse.validSignupRequest(body):
         new_name = parse.getSignupName(body)
@@ -181,15 +192,16 @@ def processNew(body, number):
         user.phone = number
         user.save()
 
-        to_number = number
         message_body = "Welcome! Text 'STOP CLAREMONT SMS' to leave the service. \
                         Text 'Firstname Lastname: message' to text a friend." 
-        client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
+        client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
 
     else:
-        to_number = number
-        message_body = "Text 'SIGNUP: Firstname Lastname' to join Claremont SMS!" 
-        client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
+        requestSignup(number)
+       
+def requestSignup(number):
+    message_body = "Text 'SIGNUP: Firstname Lastname' to join Claremont SMS!" 
+    client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
 
 
 #---------------------------------------------

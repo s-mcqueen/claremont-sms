@@ -35,7 +35,7 @@ def validMessageRequest(sms_body):
         if c not in 'qwertyuiopasdfghjklzxcvbnm':
             return False
 
-    if (name_section == 'signup'):
+    if (name == 'signup'):
         return False
 
     return True
@@ -54,9 +54,9 @@ def getMessageBody(sms_body):
         has returned True '''
 
     sms = colonSplit(sms_body)
-    message_section = sms[1]
+    message = sms[1]
 
-    return message_section
+    return message
 
 #---------------------------------------------
 # guess validity
@@ -72,10 +72,10 @@ def validGuessRequest(sms_body):
         # there is no colon
         return False
 
-    guess_section = formatText(sms[0])
+    guess = formatText(sms[0])
 
     # only return true if guess_section only has digits
-    for c in guess_section:
+    for c in guess:
         if c not in '1234567890':
             return False
 
@@ -86,17 +86,18 @@ def getGuessNumber(sms_body):
         has returned True '''
 
     sms = colonSplit(sms_body)
-    guess_section = sms[0].replace(' ', '')
+    guess_number = sms[0].replace(' ', '')
    
-    return guess_section
+    return guess_number
 
 def getGuessName(sms_body):
     ''' this should NOT be called unless validGuessRequest
         has returned True '''
-    sms = colonSplit(sms_body)
-    name_section = sms[1].lower().replace(' ', '')
 
-    return name_section
+    sms = colonSplit(sms_body)
+    guess_name = formatText(sms[1])
+
+    return guess_name
 
 
 #---------------------------------------------
@@ -106,12 +107,14 @@ def getGuessName(sms_body):
 def validSignupRequest(sms_body):
     ''' return true if the sms is a valid signup request
         ie: "SIGNUP: first last" '''
+
     sms = colonSplit(sms_body)
-    signup_phrase = sms[0].lower().replace(' ', '')
 
     if (len(sms) < 2):
         # there is no colon, so we don't have a name
         return False
+
+    signup_phrase = formatText(sms[0])
 
     if (signup_phrase == 'signup'):
         return True
@@ -120,10 +123,10 @@ def validSignupRequest(sms_body):
 def getSignupName(sms_body):
     ''' this should NOT be called unless validSignupRequest
         has returned True '''    
-    sms = colonSplit(sms_body)
-    signup_name = sms[1].lower().replace(' ', '')
 
-    # make name lower case and remove spaces   
+    sms = colonSplit(sms_body)
+    signup_name = formatText(sms[1])
+
     return signup_name
 
 #---------------------------------------------
@@ -134,7 +137,7 @@ def validStopRequest(sms_body):
     ''' return true if the sms_body  '''
 
     # lower case and no spaces
-    stop_phrase = sms_body.lower().replace(' ', '')
+    stop_phrase = formatText(sms_body)
 
     if (stop_phrase == "stopclaremontsms"):
         return True

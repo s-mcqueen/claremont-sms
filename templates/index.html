@@ -2,9 +2,12 @@
 <html>
 <head>
 	<title></title>
-	<link href="../static/Flat-UI/bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link href="../static/Flat-UI/css/flat-ui.css" rel="stylesheet">
-	<link href="../static/custom.css" rel="stylesheet">
+	<link href="../static/css/bootstrap.css" rel="stylesheet">
+    <link href="../static/css/Flat-UI/flat-ui.css" rel="stylesheet">
+	<link href="../static/css/custom.css" rel="stylesheet">
+	<link href="../static/css/flippant.css" rel="stylesheet">
+
+
 </head>
 <body>
 	<div class="container" id="header">
@@ -16,15 +19,25 @@
 		<div class="row">
 			<div class="span5">
 				<div id="signup">
-					<div class="login-form">
+					<div id="login-flipper" class="login-form flippant">
 						<div class="control-group">
-							<input type="text" class="login-field" value placeholder="full name" id="login-name">
-						</div>
-						<div class="control-group">
-							<input type="text" class="login-field" value placeholder="phone number" id="login-name">
+							<form action="" method="post" name="signup">
+		
+								{{form.hidden_tag()}}
+								
+									<p>
+										{{form.user(class="login-field", placeholder="full name", id="login-name")}}
+									</p>
+								
+								
+									<p>
+										{{form.number(class="login-field", placeholder="phone number", id="login-name")}}
+									</p>
+								</div>
 
-						</div>
-				  		<button type="button" class="btn btn-primary btn-large btn-block" data-toggle="modal" data-target="#intro">Create Account</button>
+							  	<p><input type="submit" value="Create Account" class="btn btn-primary btn-large btn-block btnflip" id="btnflip"></p>
+
+							</form>
 					</div>
 					<div id="about-us">
 						<p> 
@@ -43,23 +56,22 @@
 				<div id="newsfeed">
 					<div id="entries"> 
 
+						<div class="entry" id="entry-header">
+							<strong>Feed</strong>
+						</div>
+
 						{% for post in posts %}
 
 						<div class="entry">
-							<p class="entry-name"> to: {{post.to_name}} </p>
-							<p class="entry-message"> {{post.message}}</p>
+							<p class="entry-tag"> to: {{post.to_name}} </p>
+							<p class="entry-content"> {{post.message}}</p>
 						</div>
 						{% endfor %}
-
 					</div>
 				</div>
 			</div> 
 		</div>
 	</div>
-	<div class="container">
-	</div>
-
-	
 
 	<div class="container" id="footer">
 		<div class="row">
@@ -96,13 +108,35 @@
 
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	<script src="../static/bootstrap/js/bootstrap.min.js"></script>
+	<script src="../static/js/Flat-UI-bootstrap/bootstrap.min.js"></script>
+	<script src="../static/js/flippant.js"></script>
+
 
 <script type="text/javascript">
-$(function() {
-	$('#intro').modal({show = false;});
-});
+	
+	var flip = flippant.flip;
+	var toFlip = document.getElementById('btnflip');
+
+	toFlip.addEventListener('click', function(e){
+			e.preventDefault();
+
+			var flipper = document.getElementById('login-flipper');
+			var back;
+			var textarea = '<h1 style="color: #1ABC9C;"> Thanks! </h1>'
+
+			back = flip(flipper, textarea);
+
+			back.addEventListener('click', function(e){
+				event.trigger(back, 'close');
+			})
+	
+	})
+
 </script>
+
+
+
+
 
 
 </body>

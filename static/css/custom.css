@@ -18,13 +18,13 @@ body{
     background-color: #16A085;
 }
 
-#header{
-/*    height: 140px;
-*/    margin-top: 20px;
+h1{
+    color: #ECF0F1;
 }
 
-#title{
-    color: #ECF0F1;
+#header{
+    height: 140px;
+    margin-top: 20px;
 }
 
 .container{
@@ -34,12 +34,11 @@ body{
     border-radius: 8px 8px 6px 6px;
 	background-color: #34495E;
     padding: 20px;
-    color: #ECF0F1;
-
 }
 
 #about-us{
     padding: 20px;
+    color: #ECF0F1;
 }
 
 .login-form:before{
@@ -50,31 +49,48 @@ body{
     width: 96%;
 }
 
-#newsfeed{
+#newsfeed {
     border-radius: 8px 8px 6px 6px;
     background-color: #1ABC9C;
     padding: 20px;
 }
 
 #entries {
-    background-color: #edeff1;
-    border-radius: 5px;
+    border-radius: 8px 8px 6px 6px;
+    background-color: #ffffff;
 }
 
-.entry{
-    border-bottom: 1px #BDC3C7 solid;
-    padding: 10px;
+.entry {
+    height: 60px;
+    padding-left: 30px;
+    border-bottom: 1px solid #efefef;
 }
 
-.entry-name{
-    font-style: italic;
+#entry-header {
+    border-radius: 8px 8px 0px 0px;
+    height: 40px;
+    font-size: 24px;
+    line-height: 40px;
+    padding-top: 10px;
+
+}
+
+.entry-tag {
+    height: 15px;
+    font-size: 16px;
+    padding-top: 5px;
     color: #3498DB;
 }
 
-#footer{
-    height: 100px;
+
+.entry-content {
+    height: 25px;
+    padding-top: 5px;
 }
 
+#footer{
+    height: 200px;
+}
 
 .intro-header {
 	padding-left: 30px;
@@ -88,5 +104,5 @@ body{
 
 .intro-footer {
 	padding: 20px;
-	padding-bottom: 20px;
+    margin-bottom: 40px;
 }
