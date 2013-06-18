@@ -82,6 +82,10 @@ h1{
     padding-top: 5px;
 }
 
+#intro {
+    display: none;
+}
+
 .intro-header {
 	padding-left: 30px;
 	padding-right: 20px;
