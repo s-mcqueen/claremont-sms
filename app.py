@@ -3,12 +3,15 @@ from flask import Flask, request, redirect, render_template, session, url_for, s
 import twilio.twiml
 from twilio.rest import TwilioRestClient
 import urllib
+import urllib2
+import simplejson
 import json
 import datetime
 import random
 from tokens import TWILIO_ID, TWILIO_TOKEN, TWILIO_NUM
 import parse # collection of methods for text parsing
 import forms # class to instantiate form object + validations
+import pdb
 
 #---------------------------------------------
 # initialization
@@ -84,8 +87,8 @@ def signup():
 
     if request.method == "POST":
         data = request.form
-        print data
-        return data
+        processNew(data['user'],data['number'])
+        return jsonify(data)
 
     
 @app.route("/receive", methods = ['GET', 'POST'])

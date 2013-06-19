@@ -121,28 +121,16 @@ $(function(){
     $('button').on('click', function(e){
         e.preventDefault();
 
-
         $.ajax({
 			type: "POST",
-			// contentType: "application/json; charset=utf-8",
+			dataType: "json",
 			url: $SCRIPT_ROOT + '/signup',
 			data: $('#signup-form').serialize(),
 			success: function (data) {
 				console.log(data.user);
 				console.log(data.number);
-			},
-  			dataType: "json"
+			},  			
 		});
-		// $.ajax({
-  //       	type: 'POST',
-  //       	url: $SCRIPT_ROOT + '/signup',
-  //       	contentType: "application/json; charset=utf-8",
-  //       	dataType: "json",
-  //           data: { 
-  //       		"user": $('input[name="user"]').val(),
-  //  				"number": $('input[name="number"]').val()
-  //  			}
-  //  		 });
 
         $("#intro").modal("show");
     });
