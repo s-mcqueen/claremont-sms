@@ -33,8 +33,12 @@ h1{
 #signup {
     border-radius: 8px 8px 6px 6px;
 	background-color: #34495E;
-    color: #F1C40F;
     padding: 20px;
+}
+
+#about-us{
+    padding: 20px;
+    color: #ECF0F1;
 }
 
 .login-form:before{
@@ -47,15 +51,13 @@ h1{
 
 #newsfeed {
     border-radius: 8px 8px 6px 6px;
-    height: 1000px;
     background-color: #1ABC9C;
+    padding: 20px;
 }
 
 #entries {
     border-radius: 8px 8px 6px 6px;
-    height: 960px;
     background-color: #ffffff;
-    margin: 20px 20px 20px 20px;
 }
 
 .entry {
@@ -69,21 +71,25 @@ h1{
     height: 40px;
     font-size: 24px;
     line-height: 40px;
-    vertical-align: middle;
+    padding-top: 10px;
+
 }
 
-#entry-tag {
+.entry-tag {
     height: 15px;
     font-size: 16px;
+    padding-top: 5px;
+    color: #3498DB;
 }
 
-#entry-content {
+
+.entry-content {
     height: 25px;
     padding-top: 5px;
 }
 
-#intro {
-    display: none;
+#footer{
+    height: 200px;
 }
 
 .intro-header {

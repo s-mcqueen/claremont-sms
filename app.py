@@ -87,7 +87,9 @@ def signup():
 
     if request.method == "POST":
         data = request.form
-        processNew(data['user'],data['number'])
+        signup_str = 'SIGNUP: %s' % data['user']
+        processNew(signup_str, data['number'])
+        print signup_str
         return jsonify(data)
 
     
