@@ -12,6 +12,7 @@ from tokens import TWILIO_ID, TWILIO_TOKEN, TWILIO_NUM
 import parse # collection of methods for text parsing
 import forms # class to instantiate form object + validations
 import pdb
+from wtforms import ValidationError
 
 #---------------------------------------------
 # initialization
@@ -72,14 +73,7 @@ def display():
     ''' displays messages and processes signup form '''
 
     messages = list(Message.objects())
-    form = forms.SignupForm()
-
-    if form.validate_on_submit():
-        number = "+1" + form.number.data
-        requestSignup(number)
-        return redirect("/")
-
-    return render_template('index.html', posts = messages, form = form)
+    return render_template('index.html', posts = messages)
 
 @app.route("/signup", methods = ['GET','POST'])
 def signup():
@@ -88,9 +82,16 @@ def signup():
     if request.method == "POST":
         data = request.form
         signup_str = 'SIGNUP: %s' % data['user']
-        processNew(signup_str, data['number'])
-        print signup_str
-        return jsonify(data)
+       
+        try:
+            forms.validate_signup(data)
+        except ValidationError, e:
+            errors_dict = {}
+            errors_dict['errors'] = e.message
+            return jsonify(errors_dict)            
+        else:
+            # processNew(signup_str, data['number'])
+            return jsonify(data)
 
     
 @app.route("/receive", methods = ['GET', 'POST'])
@@ -203,7 +204,7 @@ def processNew(body, number):
 
         user = User()
         user.name = new_name
-        user.phone = number
+        user.phone = "+1" + number
         user.save()
 
         message_body = "Welcome! Text 'STOP CLAREMONT SMS' to leave the service. \
