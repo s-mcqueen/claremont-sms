@@ -13,6 +13,7 @@ import parse # collection of methods for text parsing
 import forms # class to instantiate form object + validations
 import pdb
 from wtforms import ValidationError
+from random import random, randint
 
 #---------------------------------------------
 # initialization
@@ -62,6 +63,7 @@ class User(db.DynamicDocument):
     name = db.StringField(max_length=255, unique=True)
     phone = db.StringField(max_length=15, unique=True)
     created_at = db.DateTimeField(default=datetime.datetime.now)
+    verif_code = db.IntField()
     # guess_counter = db.StringField(max_length=5)
     
 #---------------------------------------------
@@ -75,13 +77,12 @@ def display():
     messages = list(Message.objects())
     return render_template('index.html', posts = messages)
 
-@app.route("/signup", methods = ['GET','POST'])
+@app.route("/signup", methods = ['POST'])
 def signup():
     ''' recieves signup form data via an ajax POST request '''
 
     if request.method == "POST":
-        data = request.form
-        signup_str = 'SIGNUP: %s' % data['user']
+        data = request.form        
        
         try:
             forms.validate_signup(data)
@@ -90,8 +91,16 @@ def signup():
             errors_dict['errors'] = e.message
             return jsonify(errors_dict)            
         else:
-            # processNew(signup_str, data['number'])
+            processWebSignup(data['user'],data['number'])
             return jsonify(data)
+
+@app.route("/verify", methods = ['GET'])
+def verify():
+    ''' returns true if form data matches verification code '''
+
+    if request.method == "GET":
+        data = request.form
+        pdb.set_trace()
 
     
 @app.route("/receive", methods = ['GET', 'POST'])
@@ -214,6 +223,27 @@ def processNew(body, number):
     else:
         requestSignup(number)
        
+def processWebSignup(name, number):
+    verif_code = randint(100000,999999)
+
+    user = User()
+    user.name = parse.formatText(name)
+    user.phone = "+1" + number
+    user.verif_code = verif_code
+    user.save()
+
+    message_body = "Hello from Claremont SMS! Enter %d on the sign up page to verify your account." % verif_code
+    client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
+
+
+def validWedSignup(number,verif_code):
+    
+    correct_verif = User.objects(phone = number).get().verif_code
+    if verif_code == correct_verif:        
+        print "success"
+    else:
+        print "denied"
+
 def requestSignup(number):
     message_body = "Text 'SIGNUP: Firstname Lastname' to join Claremont SMS!" 
     client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
