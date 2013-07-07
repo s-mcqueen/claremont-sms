@@ -1,11 +1,10 @@
 import parse
-import models
 from models import Message
 from models import User
 from models import numberExists
 from models import userExists
 
-# our text copy
+# sms copy
 GUESS_SUCCESS = "Yep. You guessed it."
 GUESS_FAILURE = "Nope, you guessed wrong."
 ALREADY_SIGNEDUP = "The phone number is already registered!"

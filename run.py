@@ -1,47 +1,15 @@
 import os
+
 from flask import Flask, request, redirect, render_template, session, url_for, send_from_directory, jsonify
-import twilio.twiml
-from twilio.rest import TwilioRestClient
 import urllib
 import urllib2
-import simplejson
 import json
-import datetime
-import random
-from tokens import TWILIO_ID, TWILIO_TOKEN, TWILIO_NUM
-import forms # class to instantiate form object + validations
+from lib import forms # class to instantiate form object + validations
 import pdb
 
-#---------------------------------------------
-# initialization
-# --------------------------------------------
-
-app = Flask(__name__)
-app.config.update(
-    DEBUG = True,
-)
-app.config.from_object('config')
-
-client = TwilioRestClient(TWILIO_ID, TWILIO_TOKEN)
-
-#---------------------------------------------
-# database
-# --------------------------------------------
-
-from mongoengine import connect
-from flask.ext.mongoengine import MongoEngine
-
-DB_NAME = 'claremont-sms-db'
-DB_USERNAME = 'evan'
-DB_PASSWORD = 'smegma69'
-DB_HOST_ADDRESS = 'ds031857.mongolab.com:31857/claremont-sms-db'
-
-app.config["MONGODB_DB"] = DB_NAME 
-connect(DB_NAME, host='mongodb://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_HOST_ADDRESS)
-db = MongoEngine(app)
-
-import process  # text processing API
-
+from app import app
+from lib import process
+from models import Message
 
 #---------------------------------------------
 # controllers

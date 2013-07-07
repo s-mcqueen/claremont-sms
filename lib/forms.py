@@ -1,6 +1,6 @@
 from flask.ext.wtf import Form, TextField
 from flask.ext.wtf import Required
-from app import Message, User, userExists, numberExists
+from models import Message, User, userExists, numberExists
 
 def must_be_first_last(form,field):
 	''' ensures name is in formart "first last" '''
