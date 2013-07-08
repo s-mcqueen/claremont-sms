@@ -3,66 +3,74 @@ var $new_user_data,
 
 $(function(){
 
-    // home page signup button
+    // home page signup button - just validates signup info
     $('#signup-btn').on('click', function(e){
         e.preventDefault();
 
-        $new_user_data = $('#signup-form').serialize()
+        // store the signup data
+        $new_user_data = $('#signup-form')
+
         $.ajax({
             type: "POST",
             dataType: "json",
             url: $SCRIPT_ROOT + '/signup',
-            data: $new_user_data
+            data: $new_user_data.serialize()
         }).done(function(data) {
 
             if(data.errors) {
 
-                $('.signup-errors').text(data.errors).show();
+                $('.errors-detail').text(data.errors).show();
                 $("#error").modal("show");
             }
 
             else {
 
                 $("#verif").modal("show");
+                send_verif();
             }           
         });
 
     });
 
-    // if verif modal open, send the user the verification code
-    if ($('#verif').attr('aria-hidden') == 'false') {
-
-        console.log("here");
+    // if verif modal open, send the user the verification code 
+    // and store data
+    function send_verif() {
 
         $.ajax({
             type: "POST",
             dataType: "json",
             url: $SCRIPT_ROOT + '/send_verif',
-            data: $new_user_data
+            data: $new_user_data.serialize()
         })
-    }
 
+    };
+
+
+    // verif modal button - validate correct verif code and set is_active true
     $('#verif-btn').on('click', function(e){
         e.preventDefault();
 
+        // add the verif-form data to the signup form data
+        var data = $new_user_data.serialize() + "&" + $('#verif-form').serialize();
+
         $.ajax({
-            type: "GET",
+            type: "POST",
             dataType: "json",
-            url: $SCRIPT_ROOT + '/verify',
-            data: $('#verif-form').serialize()
+            url: $SCRIPT_ROOT + '/receive_verif',
+            data: data
         }).done(function(data){
 
             if(data.errors) {
-                console.log(data.errors);
 
-                $('.signup-errors').text(data.errors).show();
+                $("#verif").modal("hide");
+                $('.errors-detail').text(data.errors).show();
                 $("#error").modal("show");
 
             }
 
             else {
-                console.log("success")
-
+                
+                $("#verif").modal("hide");
                 $("#intro").modal("show");
             }
         }); 

@@ -17,11 +17,12 @@ def validate_signup(data):
 def validate_verif(data):
 	''' returns true if verification code is legit '''
 
-	number = data['number']
-	verif_code = data['verif_code']
+	number = "+1" + data['number']
+	verif_code = data['verif']
 
-	correct_verif = User.objects(phone = number).get().verif_code
-	if verif_code != correct_verif:        
+	correct_verif = str(User.objects(phone = number).get().verif_code)
+	if verif_code != correct_verif:
+		pdb.set_trace()        
 		raise ValidationError('Verification code is incorrect. Try again?')
 
 

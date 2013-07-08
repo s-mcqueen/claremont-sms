@@ -47,7 +47,7 @@ db = MongoEngine(app)
 # --------------------------------------------
 
 class Message(db.DynamicDocument):
-    ''' class to hold the message fields'''
+
     from_name = db.StringField(max_length=255)
     from_phone = db.StringField(max_length=15)
     message = db.StringField(max_length=400)
@@ -57,7 +57,7 @@ class Message(db.DynamicDocument):
     guess_id = db.StringField(max_length=5) 
 
 class User(db.DynamicDocument):
-    ''' class to hold the user fields'''
+
     name = db.StringField(max_length=255, unique=True)
     phone = db.StringField(max_length=15, unique=True)
     created_at = db.DateTimeField(default=datetime.datetime.now)
@@ -76,6 +76,7 @@ def display():
     messages = list(Message.objects())
     return render_template('index.html', posts = messages)
 
+
 @app.route("/signup", methods = ['POST'])
 def signup():
     ''' receives signup form data from the homepage signup form and checks for errors '''
@@ -92,6 +93,7 @@ def signup():
         else:            
             return jsonify(data)
 
+
 @app.route("/send_verif", methods = ['POST'])
 def sendVerif():
     ''' sends the user a verif_code and stores their info '''
@@ -100,6 +102,7 @@ def sendVerif():
         data = request.form               
         processWebSignup(data['user'],data['number'])          
         return jsonify(data)
+
 
 @app.route("/receive_verif", methods = ['POST'])
 def receiveVerif():
@@ -114,7 +117,7 @@ def receiveVerif():
             errors_dict = {}
             errors_dict['errors'] = e.message
             return jsonify(errors_dict)            
-        else:
+        else:            
             setActive(data)
             return jsonify(data)
 
@@ -273,11 +276,10 @@ def deleteUser(number):
 
 def setActive(data):
 
-    number = data['number']
+    number = "+1" + data['number']
 
     user = User.objects(phone = number)
-    user.is_active = True
-    user.save()
+    user.update(set__is_active = True)
 
 
 
