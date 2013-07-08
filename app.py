@@ -1,23 +1,22 @@
-import os
-from flask import Flask, request, redirect, render_template, session, url_for, send_from_directory, jsonify
-import twilio.twiml
-from twilio.rest import TwilioRestClient
-import urllib
 import urllib2
-import simplejson
 import json
 import datetime
-import random
 from tokens import TWILIO_ID, TWILIO_TOKEN, TWILIO_NUM
 import parse # collection of methods for text parsing
 import forms # class to instantiate form object + validations
 import pdb
 from wtforms import ValidationError
 from random import random, randint
+from multiprocessing import Process
 
 #---------------------------------------------
 # initialization
 # --------------------------------------------
+
+import os
+from flask import Flask, request, redirect, render_template, session, url_for, send_from_directory, jsonify
+import twilio.twiml
+from twilio.rest import TwilioRestClient
 
 app = Flask(__name__)
 app.config.update(
@@ -31,7 +30,6 @@ client = TwilioRestClient(TWILIO_ID, TWILIO_TOKEN)
 # database
 # --------------------------------------------
 
-#import mongodb libraries
 from mongoengine import connect
 from flask.ext.mongoengine import MongoEngine
 
@@ -64,6 +62,7 @@ class User(db.DynamicDocument):
     phone = db.StringField(max_length=15, unique=True)
     created_at = db.DateTimeField(default=datetime.datetime.now)
     verif_code = db.IntField()
+    is_active = db.BooleanField(default=False)
     # guess_counter = db.StringField(max_length=5)
     
 #---------------------------------------------
@@ -79,7 +78,7 @@ def display():
 
 @app.route("/signup", methods = ['POST'])
 def signup():
-    ''' recieves signup form data via an ajax POST request '''
+    ''' receives signup form data from the homepage signup form and checks for errors '''
 
     if request.method == "POST":
         data = request.form        
@@ -90,17 +89,34 @@ def signup():
             errors_dict = {}
             errors_dict['errors'] = e.message
             return jsonify(errors_dict)            
-        else:
-            processWebSignup(data['user'],data['number'])
+        else:            
             return jsonify(data)
 
-@app.route("/verify", methods = ['GET'])
-def verify():
-    ''' returns true if form data matches verification code '''
+@app.route("/send_verif", methods = ['POST'])
+def sendVerif():
+    ''' sends the user a verif_code and stores their info '''
 
-    if request.method == "GET":
+    if request.method == "POST":
+        data = request.form               
+        processWebSignup(data['user'],data['number'])          
+        return jsonify(data)
+
+@app.route("/receive_verif", methods = ['POST'])
+def receiveVerif():
+    ''' recieves verif form data from the verif modal and processes it '''
+
+    if request.method == "POST":
         data = request.form
-        pdb.set_trace()
+
+        try:
+            forms.validate_verif(data)
+        except ValidationError, e:
+            errors_dict = {}
+            errors_dict['errors'] = e.message
+            return jsonify(errors_dict)            
+        else:
+            setActive(data)
+            return jsonify(data)
 
     
 @app.route("/receive", methods = ['GET', 'POST'])
@@ -116,6 +132,10 @@ def receive():
 
     else:
         processNew(body, number)
+
+#---------------------------------------------
+# SMS processing
+# --------------------------------------------
 
 def numberExists(phone_number):
     ''' checks if number exists in users db'''
@@ -222,10 +242,21 @@ def processNew(body, number):
 
     else:
         requestSignup(number)
+
+def requestSignup(number):
+    message_body = "Text 'SIGNUP: Firstname Lastname' to join Claremont SMS!" 
+    client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
+
+#---------------------------------------------
+# Signup processing
+# --------------------------------------------
        
 def processWebSignup(name, number):
+
+    # generate random verif_code
     verif_code = randint(100000,999999)
 
+    # store user in db, delete if verif is wrong
     user = User()
     user.name = parse.formatText(name)
     user.phone = "+1" + number
@@ -236,17 +267,18 @@ def processWebSignup(name, number):
     client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
 
 
-def validWedSignup(number,verif_code):
-    
-    correct_verif = User.objects(phone = number).get().verif_code
-    if verif_code == correct_verif:        
-        print "success"
-    else:
-        print "denied"
+def deleteUser(number):
 
-def requestSignup(number):
-    message_body = "Text 'SIGNUP: Firstname Lastname' to join Claremont SMS!" 
-    client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
+    abc = "abc"
+
+def setActive(data):
+
+    number = data['number']
+
+    user = User.objects(phone = number)
+    user.is_active = True
+    user.save()
+
 
 
 #---------------------------------------------

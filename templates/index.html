@@ -70,6 +70,7 @@
 		</div>
 	</div>
 
+	<!-- Error modal -->
 	<div id="error" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="introLabel" aria-hidden="true"> 
 		<div class="intro-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
@@ -83,6 +84,24 @@
 		</div>
 	</div>
 
+	<!-- Verification modal -->
+	<div id="verif" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="introLabel" aria-hidden="true"> 
+		<div class="intro-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+				<h3>Welcome to Claremont SMS!</h3>
+		</div>
+		<div class="intro-body">
+			Verification
+			<form name="verif-form" id="something" method="get">
+				<input type="text" value placeholder="e.g. 123456" name="verif">
+			</form>
+		</div>
+		<div class="intro-footer">
+			<button type="button" class="btn btn-primary btn-large btn-block btnflip" id="verif-btn">Create Account</button>
+		</div>
+	</div>
+
+	<!-- Signup success modal -->
 	<div id="intro" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="introLabel" aria-hidden="true"> 
 		<div class="intro-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
@@ -101,13 +120,6 @@
 			<div class="well well-small">
 				<p>27281: Evan Casey</p>
 			</div>
-
-			<form name="verif-form" id="something" method="get">
-				<input type="text" value placeholder="e.g. 123456" name="verif_code">
-
-			</form>
-
-			<button type="button" class="btn btn-primary btn-large btn-block btnflip" id="verif-btn">Create Account</button>
 			<p>If you guess correctly, we'll let you know!</p><p>Good luck out there!</p>
 
 		</div>

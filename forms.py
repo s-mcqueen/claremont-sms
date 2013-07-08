@@ -4,7 +4,7 @@ import pdb
 from parse import formatText
 
 def validate_signup(data):
-	''' calls helper methods for a user signup action'''
+	''' validates a user signup action'''
 
 	user = data['user']
 	number = data['number']
@@ -13,6 +13,17 @@ def validate_signup(data):
 	must_be_valid_number(number)
 	user_must_not_exist(user)
 	number_must_not_exist(number)
+
+def validate_verif(data):
+	''' returns true if verification code is legit '''
+
+	number = data['number']
+	verif_code = data['verif_code']
+
+	correct_verif = User.objects(phone = number).get().verif_code
+	if verif_code != correct_verif:        
+		raise ValidationError('Verification code is incorrect. Try again?')
+
 
 #---------------------------------------------
 # helper methods
