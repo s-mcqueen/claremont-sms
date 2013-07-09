@@ -20,6 +20,7 @@ $(function(){
             if(data.errors) {
 
                 $('.errors-detail').text(data.errors).show();
+                $('#error-button').text("Try again?").show()
                 $("#error").modal("show");
             }
 
@@ -47,7 +48,7 @@ $(function(){
 
 
     // verif modal button - validate correct verif code and set is_active true
-    $('#verif-btn').on('click', function(e){
+    $('#verif-btn').on('click', function(e) {
         e.preventDefault();
 
         // add the verif-form data to the signup form data
@@ -64,6 +65,7 @@ $(function(){
 
                 $("#verif").modal("hide");
                 $('.errors-detail').text(data.errors).show();
+                $('#error-button').text("Send me another verification code").show()
                 $("#error").modal("show");
 
             }
@@ -75,4 +77,18 @@ $(function(){
             }
         }); 
     });
+
+    // verif try again button, sends the user another verif code
+    $('#error-button').on('click', function(e) {
+        e.preventDefault();
+
+        if ($('#error-button').html() == "Send me another verification code") {
+            send_verif();
+        }
+
+        $("#error").modal("hide");
+        $("#verif").modal("show");
+
+    });
+
 });

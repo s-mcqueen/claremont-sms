@@ -3,7 +3,7 @@ from wtforms import Form, BooleanField, TextField, validators, ValidationError
 import pdb
 from parse import formatText
 
-def validate_signup(data):
+def validateSignup(data):
 	''' validates a user signup action'''
 
 	user = data['user']
@@ -14,15 +14,15 @@ def validate_signup(data):
 	user_must_not_exist(user)
 	number_must_not_exist(number)
 
-def validate_verif(data):
+def validateVerif(data):
 	''' returns true if verification code is legit '''
 
 	number = "+1" + data['number']
 	verif_code = data['verif']
-
+	
 	correct_verif = str(User.objects(phone = number).get().verif_code)
-	if verif_code != correct_verif:
-		pdb.set_trace()        
+
+	if verif_code != correct_verif:     
 		raise ValidationError('Verification code is incorrect. Try again?')
 
 

@@ -85,7 +85,7 @@ def signup():
         data = request.form        
        
         try:
-            forms.validate_signup(data)
+            forms.validateSignup(data)
         except ValidationError, e:
             errors_dict = {}
             errors_dict['errors'] = e.message
@@ -96,11 +96,11 @@ def signup():
 
 @app.route("/send_verif", methods = ['POST'])
 def sendVerif():
-    ''' sends the user a verif_code and stores their info '''
+    ''' launched on verif modal open, sends the user a verif_code and stores their info '''
 
     if request.method == "POST":
         data = request.form               
-        processWebSignup(data['user'],data['number'])          
+        processWebSignup(data['user'], data['number'])          
         return jsonify(data)
 
 
@@ -112,13 +112,15 @@ def receiveVerif():
         data = request.form
 
         try:
-            forms.validate_verif(data)
+            forms.validateVerif(data)
         except ValidationError, e:
             errors_dict = {}
             errors_dict['errors'] = e.message
+            deleteUser(data['number'])
             return jsonify(errors_dict)            
         else:            
-            setActive(data)
+            setActive(data['number'])
+            sendWelcome(data['number'])
             return jsonify(data)
 
     
@@ -221,13 +223,10 @@ def processExisting(body, number):
 
     elif parse.validStopRequest(body):
         # delete the user from our database
-        User.objects(phone = number).get().delete()
+        User.objects(phone = number).delete()
 
     else:
-        to_number = number
-        message_body = "Text 'STOP CLAREMONT SMS' to leave the service. \
-                        Text 'Firstname Lastname: message' to text a friend." 
-        client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
+        sendWelcome(number)
 
 
 def processNew(body, number):
@@ -239,49 +238,59 @@ def processNew(body, number):
         user.phone = "+1" + number
         user.save()
 
-        message_body = "Welcome! Text 'STOP CLAREMONT SMS' to leave the service. \
-                        Text 'Firstname Lastname: message' to text a friend." 
-        client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
-
+        sendWelcome(number)
     else:
         requestSignup(number)
+
+#---------------------------------------------
+# outgoing SMS helpers
+# --------------------------------------------
 
 def requestSignup(number):
     message_body = "Text 'SIGNUP: Firstname Lastname' to join Claremont SMS!" 
     client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
 
-#---------------------------------------------
-# Signup processing
-# --------------------------------------------
-       
-def processWebSignup(name, number):
+def sendWelcome(number):
+    message_body = "Welcome! Text 'STOP CLAREMONT SMS' to leave the service. \
+                        Text 'Firstname Lastname: message' to text a friend." 
+    client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
 
-    # generate random verif_code
-    verif_code = randint(100000,999999)
-
-    # store user in db, delete if verif is wrong
-    user = User()
-    user.name = parse.formatText(name)
-    user.phone = "+1" + number
-    user.verif_code = verif_code
-    user.save()
-
+def sendVerif(number, verif_code):
     message_body = "Hello from Claremont SMS! Enter %d on the sign up page to verify your account." % verif_code
     client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
 
+#---------------------------------------------
+# web signup processing
+# --------------------------------------------
+       
+def processWebSignup(name, number):
+    # generate random verif_code
+    verif_code = randint(100000,999999)
+
+    # check if user already exists
+    if userExists(parse.formatText(name)):
+        number = "+1" + number
+        user = User.objects(phone = number)
+        user.update(set__verif_code = verif_code)
+
+    else:
+        # store user in db, delete if verif is wrong
+        user = User()
+        user.name = parse.formatText(name)
+        user.phone = "+1" + number
+        user.verif_code = verif_code
+        user.save()
+
+    sendVerif(number, verif_code)
+
 
 def deleteUser(number):
+    User.objects(phone = number).delete()
 
-    abc = "abc"
-
-def setActive(data):
-
-    number = "+1" + data['number']
-
+def setActive(number):
+    number = "+1" + number
     user = User.objects(phone = number)
     user.update(set__is_active = True)
-
-
 
 #---------------------------------------------
 # launch
