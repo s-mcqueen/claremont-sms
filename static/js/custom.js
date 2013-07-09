@@ -1,5 +1,4 @@
-var $new_user_data,
-    verif_code;
+var $new_user_data;
 
 $(function(){
 
@@ -74,9 +73,22 @@ $(function(){
                 
                 $("#verif").modal("hide");
                 $("#intro").modal("show");
+                send_welcome();
             }
         }); 
     });
+
+    // if intro form opens, send the user th welcome message
+    function send_welcome() {
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: $SCRIPT_ROOT + '/send_welcome',
+            data: $new_user_data.serialize()
+        })
+
+    }
 
     // verif try again button, sends the user another verif code
     $('#error-button').on('click', function(e) {
@@ -84,11 +96,16 @@ $(function(){
 
         if ($('#error-button').html() == "Send me another verification code") {
             send_verif();
+
+            $("#error").modal("hide");
+            $("#verif").modal("show");
+
+            // clear the form data
+            document.getElementById("verif-form").reset();
         }
-
-        $("#error").modal("hide");
-        $("#verif").modal("show");
-
+      
     });
+
+
 
 });

@@ -90,24 +90,7 @@
 				<h3>Welcome to Claremont SMS!</h3>
 		</div>
 		<div class="intro-body">
-			Verification
-			<form name="verif-form" id="verif-form" method="post">
-				<input type="text" value placeholder="e.g. 123456" name="verif">
-			</form>
-		</div>
-		<div class="intro-footer">
-			<button type="button" class="btn btn-primary btn-large btn-block btnflip" id="verif-btn">Create Account</button>
-		</div>
-	</div>
-
-	<!-- Signup success modal -->
-	<div id="intro" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="introLabel" aria-hidden="true"> 
-		<div class="intro-header">
-			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-				<h3>Welcome to Claremont SMS!</h3>
-		</div>
-		<div class="intro-body">
-			<p>You should receive an SMS confirmation shortly. This is a quick introduction to get you started!</p> <p>Send a text to your friend by providing their first and last name followed by a colon and the message you would like to send. For example:</p>
+			<p>You should receive an SMS verification code shortly. This is a quick introduction to get you started!</p> <p>Send a text to your friend by providing their first and last name followed by a colon and the message you would like to send. For example:</p>
 			<div class="well well-small">
 				<p>Sean McQueen: You are such a dream boat</p>
 			</div>
@@ -119,7 +102,35 @@
 			<div class="well well-small">
 				<p>27281: Evan Casey</p>
 			</div>
-			<p>If you guess correctly, we'll let you know!</p><p>Good luck out there!</p>
+			<p>If you guess correctly, we'll let you know! Good luck out there!</p>
+			<h4><strong>To finish signing up, enter your verification code below: </strong></h4>
+		</div>
+		<div class="intro-footer">
+			<div class="row">
+				<div class="span2">
+					<form name="verif-form" id="verif-form" method="post">
+						<input type="text" value placeholder="e.g. 123456" name="verif">
+					</form>
+				</div>			
+				<button type="button" class="btn pull-right btn-success" id="verif-btn">Create Account</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Signup success modal -->
+	<div id="intro" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="introLabel" aria-hidden="true"> 
+		<div class="intro-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+				<h3>Thank you for registering!</h3>
+		</div>
+		<div class="intro-body">
+			<p>You should receive an SMS confirmation shortly.</p>
+			<p>Don't forget, you can always leave the service by responding with:
+			<div class="well well-small">
+				<p>STOP CLAREMONT SMS</p>
+			</div>
+			<p>More instructions... </p>
+			
 
 		</div>
 		<div class="intro-footer">

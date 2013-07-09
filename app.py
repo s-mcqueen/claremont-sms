@@ -103,10 +103,19 @@ def sendVerif():
         processWebSignup(data['user'], data['number'])          
         return jsonify(data)
 
+@app.route("/send_welcome", methods = ['POST'])
+def sendWelcome():
+    ''' launched on into modal open, sends the user a the welcome message '''
+
+    if request.method == "POST":
+        data = request.form               
+        sendWelcome(data['number'])          
+        return jsonify(data)        
+
 
 @app.route("/receive_verif", methods = ['POST'])
 def receiveVerif():
-    ''' recieves verif form data from the verif modal and processes it '''
+    ''' receives verif form data from the verif modal and processes it '''
 
     if request.method == "POST":
         data = request.form
@@ -119,13 +128,12 @@ def receiveVerif():
             deleteUser(data['number'])
             return jsonify(errors_dict)            
         else:            
-            setActive(data['number'])
-            sendWelcome(data['number'])
+            setActive(data['number'])            
             return jsonify(data)
 
     
-@app.route("/receive", methods = ['GET', 'POST'])
-def receive(): 
+@app.route("/receive_text", methods = ['GET', 'POST'])
+def receiveText(): 
     ''' method to recieve texts, parse them, and store in mongo'''
 
 	#store the text body and phone number

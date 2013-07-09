@@ -82,7 +82,6 @@ h1{
     color: #3498DB;
 }
 
-
 .entry-content {
     height: 25px;
     padding-top: 5px;
@@ -100,9 +99,22 @@ h1{
 .intro-body {
 	padding-left: 30px;
 	padding-right: 30px;
+    margin-bottom: 10px;
 }
 
 .intro-footer {
-	padding: 20px;
-    margin-bottom: 40px;
+	padding-left: 30px;
+    padding-right: 30px;
+}
+
+.intro-footer .btn{
+    margin-bottom: 20px;
+}
+
+#verif-form {
+    width: 230px;
+}
+#verif-btn {
+    margin-left: 10px;
+    width: 270px;
 }
