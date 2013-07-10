@@ -1,6 +1,5 @@
 import urllib2
 import json
-import datetime
 from tokens import TWILIO_ID, TWILIO_TOKEN, TWILIO_NUM
 import parse # collection of methods for text parsing
 import forms # class to instantiate form object + validations
@@ -8,7 +7,7 @@ import pdb
 from wtforms import ValidationError
 from random import random, randint
 from multiprocessing import Process
-
+from datetime import datetime, timedelta
 #---------------------------------------------
 # initialization
 # --------------------------------------------
@@ -53,14 +52,14 @@ class Message(db.DynamicDocument):
     message = db.StringField(max_length=400)
     to_name = db.StringField(max_length=255)
     to_phone = db.StringField(max_length=15)
-    created_at = db.DateTimeField(default=datetime.datetime.now)
+    created_at = db.DateTimeField(default=datetime.utcnow())
     guess_id = db.StringField(max_length=5) 
 
 class User(db.DynamicDocument):
 
     name = db.StringField(max_length=255, unique=True)
     phone = db.StringField(max_length=15, unique=True)
-    created_at = db.DateTimeField(default=datetime.datetime.now)
+    created_at = db.DateTimeField(default=datetime.utcnow())
     verif_code = db.IntField()
     is_active = db.BooleanField(default=False)
     # guess_counter = db.StringField(max_length=5)
@@ -74,7 +73,17 @@ def display():
     ''' displays messages and processes signup form '''
 
     messages = list(Message.objects())
-    return render_template('index.html', posts = messages)
+    users = list(User.objects())
+
+    # combine messages and users, order by date
+    posts = messages + users
+    posts.sort(key=lambda x: x.created_at, reverse = True)
+
+    # convert created_at to a format we care about
+    for x in xrange(len(posts)-1):
+        posts[x].created_at = convertDate(posts[x].created_at)
+
+    return render_template('index.html', posts = posts)
 
 
 @app.route("/signup", methods = ['POST'])
@@ -299,6 +308,25 @@ def setActive(number):
     number = "+1" + number
     user = User.objects(phone = number)
     user.update(set__is_active = True)
+
+#---------------------------------------------
+# more helpers
+# --------------------------------------------
+
+def convertDate(created_at):
+    dif = datetime.utcnow() - created_at
+
+    # if dif <= timedelta(seconds = 60):
+    #     return "0m"
+    # elif dif <= timedelta(minutes = 60):
+    #     return "%dm" % dif.minutes
+    # elif dif <= timedelta(minutes = 1440):
+    #     pdb.set_trace()
+    #     return "%dh" % dif.hours
+    # else:
+    #     return "%dd" % dif.days
+    #     
+    return dif
 
 #---------------------------------------------
 # launch

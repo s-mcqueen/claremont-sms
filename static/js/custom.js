@@ -91,10 +91,10 @@ $(function(){
     }
 
     // verif try again button, sends the user another verif code
-    $('#error-button').on('click', function(e) {
+    $('#error-btn').on('click', function(e) {
         e.preventDefault();
 
-        if ($('#error-button').html() == "Send me another verification code") {
+        if ($('#error-btn').html() == "Send me another verification code") {
             send_verif();
 
             $("#error").modal("hide");
@@ -104,6 +104,14 @@ $(function(){
             document.getElementById("verif-form").reset();
         }
       
+    });
+
+    // when the user finishes sign up, refresh the page to display 
+    // the new homepage saying they signed up
+    $('#finish-button').on('click', function(e) {
+        e.preventDefault();
+
+       location.reload()
     });
 
 

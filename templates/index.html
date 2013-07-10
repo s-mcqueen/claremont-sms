@@ -53,11 +53,22 @@
 
 						{% for post in posts %}
 
-						<div class="entry">
-							<p class="entry-tag"> to: {{post.to_name}} </p>
-							<p class="entry-content"> {{post.message}}</p>
-						</div>
+							<div class="entry">
+								{% if post.to_name %}
+									<p class="entry-tag"> to: {{post.to_name}} </p>
+									<!-- <p class="entry-content"> {{post.message}}</p> -->
+									<p class="entry-date"> {{post.created_at}}</p>
+								{% endif %}
+
+								{% if post.name %}
+									<p class="entry-joined"> {{post.name}} has joined! </p>
+									<p class="entry-date"> {{post.created_at}}</p>
+								{% endif %}
+
+							</div>
+
 						{% endfor %}
+
 					</div>
 				</div>
 			</div> 
@@ -79,7 +90,7 @@
 		<div class="intro-body errors-detail">
 		</div>
 		<div class="intro-footer">
-			<button class="btn pull-right btn-success" id="error-button" data-dismiss="modal" aria-hidden="true"></button>
+			<button class="btn pull-right btn-success" id="error-btn" data-dismiss="modal" aria-hidden="true"></button>
 		</div>
 	</div>
 
@@ -134,7 +145,7 @@
 
 		</div>
 		<div class="intro-footer">
-			<button class="btn pull-right btn-success" data-dismiss="modal" aria-hidden="true">Thanks!</button>
+			<button class="btn pull-right btn-success" id="finish-btn" data-dismiss="modal" aria-hidden="true">Thanks!</button>
 		</div>
 	</div>
 
