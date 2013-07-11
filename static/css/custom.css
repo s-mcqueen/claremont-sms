@@ -62,7 +62,7 @@ h1{
 
 .entry {
     height: 60px;
-    padding-left: 30px;
+    padding-left: 25px;
     border-bottom: 1px solid #efefef;
     padding-top: 5px;   
 }
@@ -85,7 +85,7 @@ h1{
     font-size: 16px;    
     color: #3498DB;
     float:left; 
-    margin-left: 20px;
+    margin-left: 15px;
 }
 
 .entry-date {
@@ -94,12 +94,18 @@ h1{
 }
 
 .entry-content {
-    height: 25px;
     padding-top: 5px;
 }
 
-.entry-joined {
+
+.entry .fui-user {
     float:left;
+    margin-left: 20px;
+}
+
+.entry .fui-mail {
+    float:left;
+    margin-left: 20px;
 }
 
 #footer{
