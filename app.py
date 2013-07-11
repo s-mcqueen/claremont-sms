@@ -317,13 +317,13 @@ def convertDate(created_at):
     dif = datetime.utcnow() - created_at
 
     if dif <= timedelta(seconds = 60):
-        return "%d seconds ago" % dif.seconds
+        return "%d second%s ago" % (dif.seconds, "s"[dif.seconds==1:])
     elif dif <= timedelta(minutes = 60):
-        return "%d minutes ago" % dif.minutes
+        return "%d minute%s ago" % (dif.minutes, "s"[dif.minutes==1:])
     elif dif <= timedelta(minutes = 1440):
-        return "%d hours ago" % dif.hours
+        return "%d hour%s ago" % (dif.hours, "s"[dif.hours==1:])
     else:
-        return "%d days ago" % dif.days
+        return "%d day%s ago" % (dif.days, "s"[dif.days ==1:])
 
 #---------------------------------------------
 # launch
