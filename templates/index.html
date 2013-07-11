@@ -55,14 +55,19 @@
 
 							<div class="entry">
 								{% if post.to_name %}
-									<p class="entry-tag"> to: {{post.to_name}} </p>
-									<!-- <p class="entry-content"> {{post.message}}</p> -->
-									<p class="entry-date"> {{post.created_at}}</p>
+									<div class="row">
+										<p class="entry-top"> to: {{post.to_name}} </p>										
+										<p class="entry-date"> {{post.created_at}}</p>		
+									</div>																			
+									<p class="entry-content"> {{post.message}}</p>										
 								{% endif %}
 
 								{% if post.name %}
+									<div class="row">
+										<p class="entry-top"> New user! </p>
+										<p class="entry-date"> {{post.created_at}}</p>
+									</div>
 									<p class="entry-joined"> {{post.name}} has joined! </p>
-									<p class="entry-date"> {{post.created_at}}</p>
 								{% endif %}
 
 							</div>
