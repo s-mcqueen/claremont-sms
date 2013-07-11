@@ -80,7 +80,7 @@ def display():
     posts.sort(key=lambda x: x.created_at, reverse = True)
 
     # convert created_at to a format we care about
-    for x in xrange(len(posts)-1):
+    for x in xrange(len(posts)):
         posts[x].created_at = convertDate(posts[x].created_at)
 
     return render_template('index.html', posts = posts)
@@ -316,17 +316,14 @@ def setActive(number):
 def convertDate(created_at):
     dif = datetime.utcnow() - created_at
 
-    # if dif <= timedelta(seconds = 60):
-    #     return "0m"
-    # elif dif <= timedelta(minutes = 60):
-    #     return "%dm" % dif.minutes
-    # elif dif <= timedelta(minutes = 1440):
-    #     pdb.set_trace()
-    #     return "%dh" % dif.hours
-    # else:
-    #     return "%dd" % dif.days
-    #     
-    return dif
+    if dif <= timedelta(seconds = 60):
+        return "%d seconds ago" % dif.seconds
+    elif dif <= timedelta(minutes = 60):
+        return "%d minutes ago" % dif.minutes
+    elif dif <= timedelta(minutes = 1440):
+        return "%d hours ago" % dif.hours
+    else:
+        return "%d days ago" % dif.days
 
 #---------------------------------------------
 # launch
