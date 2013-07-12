@@ -1,37 +1,63 @@
-# from flask.ext.wtf import Form, TextField
-# from flask.ext.wtf import Required
-# from models import Message, User, userExists, numberExists
+from app import Message, User, userExists, numberExists
+from wtforms import Form, BooleanField, TextField, validators, ValidationError
+import pdb
+from parse import formatText
 
-# def must_be_first_last(form,field):
-# 	''' ensures name is in formart "first last" '''
+def validateSignup(data):
+	''' validates a user signup action'''
+
+	user = data['user']
+	number = data['number']
+
+	must_be_first_last(user)
+	must_be_valid_number(number)
+	user_must_not_exist(user)
+	number_must_not_exist(number)
+
+def validateVerif(data):
+	''' returns true if verification code is legit '''
+
+	number = "+1" + data['number']
+	verif_code = data['verif']
 	
-# 	name_arr = field.data.split(" ", 1)
+	correct_verif = str(User.objects(phone = number).get().verif_code)
+
+	if verif_code != correct_verif:     
+		raise ValidationError('Verification code is incorrect. Try again?')
+
+
+#---------------------------------------------
+# helper methods
+# --------------------------------------------
+
+def must_be_first_last(user):
+	''' ensures name is in format "first last" '''
 	
-# 	if len(name_arr) != 2:
-# 		raise ValidationError('Name must be in format "first last"')
+	name_arr = user.split(" ", 1)
+	
+	if len(name_arr) != 2:
+		raise ValidationError('Name must be include a first and last name.')
 
-# def must_be_valid_number(form,field):
-# 	''' ensures phone number is 10 digits long '''
+def must_be_valid_number(number):
+	''' ensures phone number is 10 digits long '''
 
-# 	if len(field.data) != 10:
-# 		raise ValidationError('Phone number must be 10 digits long')
+	if len(number) != 10:
+		raise ValidationError('Phone number must be 10 digits long.')
 
-# def user_must_not_exist(form,field):
-# 	''' ensures name doesn't already exist in db '''
+def user_must_not_exist(user):
+	''' ensures name doesn't already exist in db '''
 
-# 	if userExists(field.data):
-# 		raise ValidationError('This name has already been taken!')
+	user = formatText(user)
 
-# def number_must_not_exist(form,field):
-# 	''' ensures name doesn't already exist in db '''
+	if userExists(user):
+		raise ValidationError('This name has already been taken.')
 
-# 	# add +1 at beginning number
-# 	number = "+1" + field.data
+def number_must_not_exist(number):
+	''' ensures name doesn't already exist in db '''
 
-# 	if numberExists(number):
-# 		raise ValidationError('This phone number has already exists!')
+	# add +1 at beginning number
+	number = "+1" + number
 
-# class SignupForm(Form):
-# 	user = TextField('name', validators = [Required(), must_be_first_last, user_must_not_exist])
-# 	number = TextField('number', validators = [Required(), must_be_valid_number, number_must_not_exist])
+	if numberExists(number):
+		raise ValidationError('This phone number has already been taken.')
 

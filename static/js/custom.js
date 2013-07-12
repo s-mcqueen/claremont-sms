@@ -1,33 +1,119 @@
- 
-    var flip = flippant.flip;
-    var toFlip = document.getElementById('btnflip');
+var $new_user_data;
 
-    toFlip.addEventListener('click', function(e){
-            e.preventDefault();
+$(function(){
 
-            var flipper = document.getElementById('signup');
-            var back;
-            var textarea = '<h1 style="color: #1ABC9C;"> Thanks! </h1>'
+    // home page signup button - just validates signup info
+    $('#signup-btn').on('click', function(e){
+        e.preventDefault();
 
-            var modal = '<h1 style="color: #1ABC9C;"> Thanks! </h1>\
-            <p>You should receive an SMS confirmation shortly. <p>Send a \
-            text to your friend by providing their first and last name followed \
-            by a colon and the message you would like to send. For example:</p> \
-            <div class="well well-small"><p>Sean McQueen: You are such a dream \
-            boat! </p></div><p>If your friend has an account with Claremont SMS, \
-            they will receive an anonymous text to their phone.</p><p>When you\
-            receive a text, it might look something like this:</p><div class="well\
-            well-small"><p>You are such a dream boat! (27281)</p></div><p>You have the \
-            opportunity to guess who sent you that text by responding with the \
-            five-digit ID number that follows your text. For example:<p><div \
-            class="well well-small"><p>27281: Evan Casey</p></div><p>If you guess \
-            correctly, we will let you know!</p>'
+        // store the signup data
+        $new_user_data = $('#signup-form')
 
-            back = flip(flipper, modal);
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: $SCRIPT_ROOT + '/signup',
+            data: $new_user_data.serialize()
+        }).done(function(data) {
 
-            back.addEventListener('click', function(e){
-                event.trigger(back, 'close');
-            })
-    
-    })
+            if(data.errors) {
 
+                $('.errors-detail').text(data.errors).show();
+                $('#error-button').text("Try again?").show()
+                $("#error").modal("show");
+            }
+
+            else {
+
+                $("#verif").modal("show");
+                send_verif();
+            }           
+        });
+
+    });
+
+    // if verif modal open, send the user the verification code 
+    // and store data
+    function send_verif() {
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: $SCRIPT_ROOT + '/send_verif',
+            data: $new_user_data.serialize()
+        })
+
+    };
+
+
+    // verif modal button - validate correct verif code and set is_active true
+    $('#verif-btn').on('click', function(e) {
+        e.preventDefault();
+
+        // add the verif-form data to the signup form data
+        var data = $new_user_data.serialize() + "&" + $('#verif-form').serialize();
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: $SCRIPT_ROOT + '/receive_verif',
+            data: data
+        }).done(function(data){
+
+            if(data.errors) {
+
+                $("#verif").modal("hide");
+                $('.errors-detail').text(data.errors).show();
+                $('#error-button').text("Send me another verification code").show()
+                $("#error").modal("show");
+
+            }
+
+            else {
+                
+                $("#verif").modal("hide");
+                $("#intro").modal("show");
+                send_welcome();
+            }
+        }); 
+    });
+
+    // if intro form opens, send the user th welcome message
+    function send_welcome() {
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: $SCRIPT_ROOT + '/send_welcome',
+            data: $new_user_data.serialize()
+        })
+
+    }
+
+    // verif try again button, sends the user another verif code
+    $('#error-btn').on('click', function(e) {
+        e.preventDefault();
+
+        if ($('#error-btn').html() == "Send me another verification code") {
+            send_verif();
+
+            $("#error").modal("hide");
+            $("#verif").modal("show");
+
+            // clear the form data
+            document.getElementById("verif-form").reset();
+        }
+      
+    });
+
+    // when the user finishes sign up, refresh the page to display 
+    // the new homepage saying they signed up
+    $('#finish-button').on('click', function(e) {
+        e.preventDefault();
+
+       location.reload()
+    });
+
+
+
+});

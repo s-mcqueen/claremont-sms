@@ -38,6 +38,7 @@ def processExisting(body, number):
     else:
         _processInvalidText(body, number)
 
+# only processes text signups.
 def processNew(body, number):
     ''' process a text if the user does NOT exist in the db'''
 
@@ -50,7 +51,28 @@ def processNew(body, number):
     
     # looks like anything else
     else:
-        requestSignup(number)
+        _requestSignup(number)
+
+
+def processWebSignup(name, number):
+    # generate random verif_code
+    verif_code = randint(100000,999999)
+
+    # check if user already exists
+    if userExists(parse.formatText(name)):
+        number = "+1" + number
+        user = User.objects(phone = number)
+        user.update(set__verif_code = verif_code)
+
+    else:
+        # store user in db, delete if verif is wrong
+        user = User()
+        user.name = parse.formatText(name)
+        user.phone = "+1" + number
+        user.verif_code = verif_code
+        user.save()
+
+    sendVerif(number, verif_code)
 
 
 def _processValidMessage(body, number):
@@ -111,6 +133,26 @@ def _processInvalidText(body, number):
     client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
 
        
-def requestSignup(number):
+def _requestSignup(number):
     message_body = REQUEST_SIGNUP 
     client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
+
+
+# helper methods, do we need these?
+
+def requestSignup(number):
+    message_body = "Text 'SIGNUP: Firstname Lastname' to join Claremont SMS!" 
+    client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
+
+
+def sendWelcome(number):
+    message_body = "Welcome! Text 'STOP CLAREMONT SMS' to leave the service. \
+                        Text 'Firstname Lastname: message' to text a friend." 
+    client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
+
+
+def sendVerif(number, verif_code):
+    message_body = "Hello from Claremont SMS! Enter %d on the sign up page to verify your account." % verif_code
+    client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
+
+

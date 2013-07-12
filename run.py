@@ -9,7 +9,7 @@ import pdb
 
 from app import app
 from lib import process
-# from models import Message
+from models import Message
 
 #---------------------------------------------
 # controllers
@@ -19,41 +19,104 @@ from lib import process
 def display():
     ''' displays messages and processes signup form '''
 
-    # messages = list(Message.objects())
-    # form = forms.SignupForm()
+    messages = list(Message.objects())
+    users = list(User.objects())
 
-    # if form.validate_on_submit():
-    #     number = "+1" + form.number.data
-    #     process.requestSignup(number)
-    #     return redirect("/")
+    # combine messages and users, order by date
+    posts = messages + users
+    posts.sort(key=lambda x: x.created_at, reverse = True)
 
-    # return render_template('index.html', posts = messages, form = form)
-    return render_template('index.html')
+    # convert created_at to a format we care about
+    for x in xrange(len(posts)):
+        posts[x].created_at = convertDate(posts[x].created_at)
 
-# @app.route("/signup", methods = ['GET','POST'])
-# def signup():
-#     ''' recieves signup form data via an ajax POST request '''
+    return render_template('index.html', posts = posts)
 
-#     if request.method == "POST":
-#         data = request.form
-#         signup_str = 'SIGNUP: %s' % data['user']
-#         process.processNew(signup_str, data['number'])
-#         return jsonify(data)
+
+@app.route("/signup", methods = ['POST'])
+def signup():
+    ''' receives signup form data from the homepage signup form and checks for errors '''
+
+    if request.method == "POST":
+        data = request.form        
+       
+        try:
+            forms.validateSignup(data)
+        except ValidationError, e:
+            errors_dict = {}
+            errors_dict['errors'] = e.message
+            return jsonify(errors_dict)            
+        else:            
+            return jsonify(data)
+
+
+@app.route("/send_verif", methods = ['POST'])
+def sendVerif():
+    ''' launched on verif modal open, sends the user a verif_code and stores their info '''
+
+    if request.method == "POST":
+        data = request.form               
+        processWebSignup(data['user'], data['number'])          
+        return jsonify(data)
+
+
+@app.route("/send_welcome", methods = ['POST'])
+def sendWelcome():
+    ''' launched on into modal open, sends the user a the welcome message '''
+
+    if request.method == "POST":
+        data = request.form 
+
+        # deprecated function
+        sendWelcome(data['number'])          
+        return jsonify(data)      
+
+
+@app.route("/receive_verif", methods = ['POST'])
+def receiveVerif():
+    ''' receives verif form data from the verif modal and processes it '''
+
+    if request.method == "POST":
+        data = request.form
+
+        try:
+            forms.validateVerif(data)
+        except ValidationError, e:
+            errors_dict = {}
+            errors_dict['errors'] = e.message
+            deleteUser(data['number'])
+            return jsonify(errors_dict)            
+        else:            
+            setActive(data['number'])            
+            return jsonify(data)
 
     
-# @app.route("/receive", methods = ['GET', 'POST'])
-# def receive(): 
-#     ''' method to recieve texts, parse them, and store in mongo'''
+@app.route("/receive_text", methods = ['GET', 'POST'])
+def receiveText(): 
+    ''' method to recieve texts, parse them, and store in mongo'''
 
-# 	#store the text body and phone number
-#     body = request.values.get('Body')
-#     number = request.values.get('From')
+    #store the text body and phone number
+    body = request.values.get('Body')
+    number = request.values.get('From')
     
-#     if numberExists(number):
-#         process.processExisting(body, number)
+    if numberExists(number):
+        processExisting(body, number)
 
-#     else:
-#         process.processNew(body, number)
+    else:
+        processNew(body, number)
+
+
+def convertDate(created_at):
+    dif = datetime.utcnow() - created_at
+
+    if dif <= timedelta(seconds = 60):
+        return "%d second%s ago" % (dif.seconds, "s"[dif.seconds==1:])
+    elif dif <= timedelta(minutes = 60):
+        return "%d minute%s ago" % (dif.minutes, "s"[dif.minutes==1:])
+    elif dif <= timedelta(minutes = 1440):
+        return "%d hour%s ago" % (dif.hours, "s"[dif.hours==1:])
+    else:
+        return "%d day%s ago" % (dif.days, "s"[dif.days ==1:])
 
 
 #---------------------------------------------
