@@ -1,4 +1,5 @@
 import datetime
+
 from app import db
 
 class Message(db.DynamicDocument):
@@ -10,7 +11,7 @@ class Message(db.DynamicDocument):
     message_body = db.StringField(max_length=400)
     to_name = db.StringField(max_length=255)
     to_phone = db.StringField(max_length=15)
-    created_at = db.DateTimeField(default=datetime.utcnow())
+    created_at = db.DateTimeField(default=datetime.datetime.utcnow())
     guess_id = db.StringField(max_length=5) 
 
 
@@ -18,7 +19,7 @@ class User(db.DynamicDocument):
     ''' class to hold the user fields'''
     name = db.StringField(max_length=255, unique=True)
     phone = db.StringField(max_length=15, unique=True)
-    created_at = db.DateTimeField(default=datetime.utcnow())
+    created_at = db.DateTimeField(default=datetime.datetime.utcnow())
     verif_code = db.IntField()
     is_active = db.BooleanField(default=False)
     # guess_counter = db.StringField(max_length=5)

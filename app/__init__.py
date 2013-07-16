@@ -9,6 +9,7 @@ from lib import tokens
 import twilio.twiml
 from twilio.rest import TwilioRestClient
 
+
 DB_NAME = 'claremont-sms-db'
 DB_USERNAME = 'evan'
 DB_PASSWORD = 'smegma69'
@@ -26,6 +27,8 @@ app.config["MONGODB_DB"] = DB_NAME
 connect(DB_NAME, host='mongodb://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_HOST_ADDRESS)
 
 db = MongoEngine(app)
+
+from views import *
 
 # twilio init
 

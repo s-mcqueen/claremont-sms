@@ -1,8 +1,6 @@
 import parse
-from models import Message
-from models import User
-from models import numberExists
-from models import userExists
+
+from models import Message, User, numberExists, userExists
 
 # sms copy
 GUESS_SUCCESS = "Yep. You guessed it."

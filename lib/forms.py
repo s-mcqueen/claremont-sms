@@ -1,6 +1,7 @@
-from app import Message, User, userExists, numberExists
-from wtforms import Form, BooleanField, TextField, validators, ValidationError
 import pdb
+
+from models import Message, User, userExists, numberExists
+from wtforms import Form, BooleanField, TextField, validators, ValidationError
 from parse import formatText
 
 def validateSignup(data):
