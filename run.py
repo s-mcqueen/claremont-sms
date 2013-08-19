@@ -6,11 +6,11 @@ import pdb
 import datetime
 from wtforms import ValidationError
 
-from lib import forms, process
 from app import *
 from models import Message as Message
 from models import User as User
-from models import numberExists, userExists
+from models import number_exists, user_exists
+from lib import forms, process
 
 #---------------------------------------------
 # launch

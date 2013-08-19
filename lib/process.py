@@ -1,156 +1,94 @@
 import parse
+from random import random, randint
+from send import send_welcome, send_message_and_id, send_guess_success, send_guess_failure, \
+                 send_already_signed_up, send_invalid, send_signup_request
+from models import create_user, create_message, number_exists, user_exists, set_verif, get_number_from_name, \
+                   get_name_from_number, get_name_from_guess_id
+from app import app
 
-from models import Message, User, numberExists, userExists
+#---------------------------------------------
+# SMS processing
+# --------------------------------------------  
 
-# sms copy
-GUESS_SUCCESS = "Yep. You guessed it."
-GUESS_FAILURE = "Nope, you guessed wrong."
-ALREADY_SIGNEDUP = "The phone number is already registered!"
-INVALID_TEXT = "Text 'STOP CLAREMONT SMS' to leave the service. \
-                Text 'Firstname Lastname: message' to text a friend." 
-WELCOME = "Welcome! Text 'STOP CLAREMONT SMS' to leave the service. \
-            Text 'Firstname Lastname: message' to text a friend."
-REQUEST_SIGNUP = "Text 'SIGNUP: Firstname Lastname' to join Claremont SMS!"
-
-
-def processExisting(body, number):
-    ''' process a text if the user does exist in the db'''
+def process_existing(body, number):
+    ''' process a text if the user does exist in the db'''    
 
     # looks like a message
-    if parse.validMessageRequest(body):
-        _processValidMessage(body, number)
+    if parse.valid_message_request(body):
+        _process_valid_message(body, number)
 
     # looks like a guess
-    elif parse.validGuessRequest(body):
-        _processValidGuess(body, number)
+    elif parse.valid_guess_request(body):
+        _process_valid_guess(body, number)
 
     # looks like a signup request
-    elif parse.validSignupRequest(body):
-        _processValidSignup(body, number)
+    elif parse.valid_signup_request(body):
+        _process_valid_signup(body, number)
 
     # looks like a stop request
-    elif parse.validStopRequest(body):
-        _processValidStop(body, number)
+    elif parse.valid_stop_request(body):
+        delete_user(number)
 
     # looks like some garbage we cant parse
     else:
-        _processInvalidText(body, number)
+        send_invalid(number)
 
-# only processes text signups.
-def processNew(body, number):
-    ''' process a text if the user does NOT exist in the db'''
+def process_new(body, number):
+    ''' process a text if the user does NOT exist in the db '''
 
     # looks like a signup request
-    if parse.validSignupRequest(body):
-        new_name = parse.getSignupName(body)
-        models.createUser(new_name, number)
-        message_body = WELCOME 
-        client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
+    if parse.valid_signup_request(body):
+        new_name = parse.get_signup_name(body)
+        create_user(new_name, number)
+        send_welcome(number)
     
     # looks like anything else
     else:
-        _requestSignup(number)
+        send_signup_request(number)
 
+#---------------------------------------------
+# private helper methods
+# --------------------------------------------  
 
-def processWebSignup(name, number):
-    # generate random verif_code
-    verif_code = randint(100000,999999)
-
-    # check if user already exists
-    if userExists(parse.formatText(name)):
-        number = "+1" + number
-        user = User.objects(phone = number)
-        user.update(set__verif_code = verif_code)
-
-    else:
-        # store user in db, delete if verif is wrong
-        user = User()
-        user.name = parse.formatText(name)
-        user.phone = "+1" + number
-        user.verif_code = verif_code
-        user.save()
-
-    sendVerif(number, verif_code)
-
-
-def _processValidMessage(body, number):
-    from_name = User.objects(phone = number).get().name
+def _process_valid_message(body, number):
+    from_name = get_name_from_number(number)
     from_phone = number
-    message_body = parse.getMessageBody(body)
-    to_name = parse.getMessageTo(body)
+    message_body = parse.get_message_body(body)
+    to_name = parse.get_message_to(body)
     # TODO: not random ID
     guess_id = str(random.randint(1,99999))  # we sms g_id out so people can guess!
 
     # if we know tagged user, we will forward the text body
-    if userExists(user_name):
-        to_phone = User.objects(name = user_name).get().phone
-        models.createMessage(from_name, from_phone, message_body, to_name, to_phone, guess_id)
-
-        # send the text! 
-        message_and_id = message_body + " (" + guess_id + ")"
-        client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_and_id)
-
+    if user_exists(user_name):
+        to_phone = get_number_from_name(user_name)
+        create_message(from_name, from_phone, message_body, to_name, to_phone, guess_id)        
+        send_message_and_id(message_body, guess_id, to_number) # send the text! 
+    # user doesn't exist but we save the message body anyway
     else:
         to_phone = ''
-        models.createMessage(from_name, from_phone, message_body, to_name, to_phone, guess_id)
+        create_message(from_name, from_phone, message_body, to_name, to_phone, guess_id)
 
 
-def _processValidGuess(body, number):
+def _process_valid_guess(body, number):
     # we grab the guess the user sends us
-    guess_number = parse.getGuessNumber(body)
+    guess_number = parse.get_guess_number(body)
 
     # if it does then we that actual name
-    actual_name = Message.objects(guess_id = guess_number).get().from_name
-    guess_name = parse.getGuessName(body)
+    actual_name = get_name_from_guess_id()
+    guess_name = parse.get_guess_name(body)
     
-    if (guess_name == actual_name):
-        to_number = number
-        message_body = GUESS_SUCCESS
-        client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
+    if (guess_name == actual_name):        
+        send_guess_success(to_number)        
     else:
-        to_number = number
-        message_body = GUESS_FAILURE
-        client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
+        send_guess_failure(to_number)
 
 
-def _processValidSignup(body, number):
-    to_number = number
-    the_user = User.objects(phone = number).get().name
-    message_body = ALREADY_SIGNEDUP
-    client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
+def _process_valid_signup(body, number):    
+    if number_exists(number):
+        send_already_signed_up(tnumber)
+    else:
+        send_signup_request(number)    
 
 
-def _processValidStop(body, number):
-    # delete the user from our database
-    User.objects(phone = number).get().delete()
-
-
-def _processInvalidText(body, number):
-    to_number = number
-    message_body = INVALID_TEXT
-    client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
-
-       
-def _requestSignup(number):
-    message_body = REQUEST_SIGNUP 
-    client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
-
-
-# helper methods, do we need these?
-
-def requestSignup(number):
-    message_body = "Text 'SIGNUP: Firstname Lastname' to join Claremont SMS!" 
-    client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
-
-
-def sendWelcome(number):
-    message_body = "Welcome! Text 'STOP CLAREMONT SMS' to leave the service. \
-                        Text 'Firstname Lastname: message' to text a friend." 
-    client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
-
-
-def sendVerif(number, verif_code):
-    message_body = "Hello from Claremont SMS! Enter %d on the sign up page to verify your account." % verif_code
-    client.sms.messages.create(to=number, from_=TWILIO_NUM, body=message_body)
 
 

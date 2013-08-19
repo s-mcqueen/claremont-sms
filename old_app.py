@@ -109,7 +109,7 @@
 
 #     if request.method == "POST":
 #         data = request.form               
-#         processWebSignup(data['user'], data['number'])          
+#         process_web_signup(data['user'], data['number'])          
 #         return jsonify(data)
 
 # @app.route("/send_welcome", methods = ['POST'])
@@ -134,7 +134,7 @@
 #         except ValidationError, e:
 #             errors_dict = {}
 #             errors_dict['errors'] = e.message
-#             deleteUser(data['number'])
+#             delete_user(data['number'])
 #             return jsonify(errors_dict)            
 #         else:            
 #             setActive(data['number'])            
@@ -149,17 +149,18 @@
 #     body = request.values.get('Body')
 #     number = request.values.get('From')
     
-#     if numberExists(number):
-#         processExisting(body, number)
+#     if number_exists(number):
+#         process_existing(body, number)
 
 #     else:
-#         processNew(body, number)
+#         process
+process_new(body, number)
 
 # #---------------------------------------------
 # # SMS processing
 # # --------------------------------------------
 
-# def numberExists(phone_number):
+# def number_exists(phone_number):
 #     ''' checks if number exists in users db'''
 
 #     try:
@@ -169,7 +170,7 @@
 #     else:
 #         return True
 
-# def userExists(user_name):
+# def user_exists(user_name):
 #     ''' check if user name exists in users db'''
 
 #     try:
@@ -179,14 +180,14 @@
 #     else:
 #         return True
 
-# def processExisting(body, number):
+# def process_existing(body, number):
 #     ''' process the text if the user exists in our db'''
 
 #     # if this looks like a message
 #     if parse.validMessageRequest(body):
 
-#         user_name = parse.getMessageTo(body)
-#         message_body = parse.getMessageBody(body)
+#         user_name = parse.get_message_to(body)
+#         message_body = parse.get_message_body(body)
 
 #         # this is a valid message, so we will set up a message db entry
 #         new_message = Message()
@@ -199,7 +200,7 @@
 #         new_message.guess_id = g_id
 
 #         # if we know tagged user, we will forward the text body
-#         if userExists(user_name):
+#         if user_exists(user_name):
 #             # store our phone number
 #             to_number = User.objects(name = user_name).get().phone
 #             new_message.to_phone = to_number
@@ -212,14 +213,14 @@
 #         new_message.save()
 
 #     # if this looks like a guess
-#     elif parse.validGuessRequest(body):
+#     elif parse.valid_guess_request(body):
 
 #         # we grab the guess the user sends us
-#         guess_number = parse.getGuessNumber(body)
+#         guess_number = parse.get_guess_number(body)
 
 #         # if it does then we that actual name
 #         actual_name = Message.objects(guess_id = guess_number).get().from_name
-#         guess_name = parse.getGuessName(body)
+#         guess_name = parse.get_guess_name(body)
         
 #         if (guess_name == actual_name):
 #             to_number = number
@@ -231,14 +232,14 @@
 #             client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
 
 
-#     elif parse.validSignupRequest(body):
+#     elif parse.valid_signup_request(body):
 #         to_number = number
 #         the_user = User.objects(phone = number).get().name
 #         message_body = "The phone number is already registered!"
 #         client.sms.messages.create(to=to_number, from_=TWILIO_NUM, body=message_body)
 
 
-#     elif parse.validStopRequest(body):
+#     elif parse.valid_stop_request(body):
 #         # delete the user from our database
 #         User.objects(phone = number).delete()
 
@@ -246,9 +247,11 @@
 #         sendWelcome(number)
 
 
-# def processNew(body, number):
-#     if parse.validSignupRequest(body):
-#         new_name = parse.getSignupName(body)
+# def process
+process_new(body, number):
+#     if parse.valid_signup_request(body):
+#         new_name = parse.get
+get_signup_name(body)
 
 #         user = User()
 #         user.name = new_name
@@ -280,12 +283,12 @@
 # # web signup processing
 # # --------------------------------------------
        
-# def processWebSignup(name, number):
+# def process_web_signup(name, number):
 #     # generate random verif_code
 #     verif_code = randint(100000,999999)
 
 #     # check if user already exists
-#     if userExists(parse.formatText(name)):
+#     if user_exists(parse.format_text(name)):
 #         number = "+1" + number
 #         user = User.objects(phone = number)
 #         user.update(set__verif_code = verif_code)
@@ -293,7 +296,7 @@
 #     else:
 #         # store user in db, delete if verif is wrong
 #         user = User()
-#         user.name = parse.formatText(name)
+#         user.name = parse.format_text(name)
 #         user.phone = "+1" + number
 #         user.verif_code = verif_code
 #         user.save()
@@ -301,7 +304,7 @@
 #     sendVerif(number, verif_code)
 
 
-# def deleteUser(number):
+# def delete_user(number):
 #     User.objects(phone = number).delete()
 
 # def setActive(number):

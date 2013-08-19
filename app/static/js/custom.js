@@ -72,23 +72,10 @@ $(function(){
             else {
                 
                 $("#verif").modal("hide");
-                $("#intro").modal("show");
-                send_welcome();
+                $("#intro").modal("show");                
             }
         }); 
     });
-
-    // if intro form opens, send the user a welcome message
-    function send_welcome() {
-
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: $SCRIPT_ROOT + '/send_welcome',
-            data: $new_user_data.serialize()
-        })
-
-    }
 
     // verif try again button, sends the user another verif code
     $('#error-btn').on('click', function(e) {

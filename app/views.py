@@ -1,27 +1,27 @@
 from flask import Flask, request, redirect, render_template, session, url_for, send_from_directory, jsonify
-from models import Message as Message
-from models import User as User
-from models import numberExists, userExists
+from wtforms import Form, BooleanField, TextField, validators, ValidationError
+from models import get_message_list, get_user_list, number_exists, user_exists, delete_user
 from lib import forms, process
+from app import app
 
 #---------------------------------------------
-# controllers
+# web controller actions
 # --------------------------------------------
 
 @app.route("/", methods = ['GET','POST'])
 def display():
     ''' displays messages and processes signup form '''
 
-    messages = list(Message.objects())
-    users = list(User.objects())
+    messages = get_message_list()
+    users = get_user_list()
 
     # combine messages and users, order by date
     posts = messages + users
     posts.sort(key=lambda x: x.created_at, reverse = True)
 
     # convert created_at to a format we care about
-    for x in xrange(len(posts)):
-        posts[x].created_at = convertDate(posts[x].created_at)
+    # for x in xrange(len(posts)):
+    #     posts[x].created_at = convertDate(posts[x].created_at)
 
     return render_template('index.html', posts = posts)
 
@@ -34,7 +34,7 @@ def signup():
         data = request.form        
        
         try:
-            forms.validateSignup(data)
+            forms.validate_signup(data)
         except ValidationError, e:
             errors_dict = {}
             errors_dict['errors'] = e.message
@@ -44,62 +44,55 @@ def signup():
 
 
 @app.route("/send_verif", methods = ['POST'])
-def sendVerif():
+def send_verif():
     ''' sends the user a verif_code and stores their info with is_active = false'''
 
     if request.method == "POST":
         data = request.form               
-        process.processWebSignup(data['user'], data['number'])          
-        return jsonify(data)
-
-
-@app.route("/send_welcome", methods = ['POST'])
-def sendWelcome():
-    ''' sends the user a the welcome message if they enter a correct verif code'''
-
-    if request.method == "POST":
-        data = request.form 
-
-        # deprecated function
-        sendWelcome(data['number'])          
-        return jsonify(data)      
+        forms.process_web_signup(data['user'], data['number'])          
+        return jsonify(data)  
 
 
 @app.route("/receive_verif", methods = ['POST'])
-def receiveVerif():
+def receive_verif():
     ''' receives verif form data from the verif modal and processes it '''
 
     if request.method == "POST":
         data = request.form
 
         try:
-            forms.validateVerif(data)
+            forms.validate_verif(data)
         except ValidationError, e:
             errors_dict = {}
             errors_dict['errors'] = e.message
-            deleteUser(data['number'])
+            delete_user(data['number'])
             return jsonify(errors_dict)            
         else:            
-            setActive(data['number'])            
+            forms.process_verif(data['number'])            
             return jsonify(data)
 
+#---------------------------------------------
+# SMS controller
+# --------------------------------------------
     
 @app.route("/receive_text", methods = ['GET', 'POST'])
-def receiveText(): 
+def receive_text(): 
     ''' method to recieve texts, parse them, and store in mongo'''
 
-    #store the text body and phone number
+    # store the text body and phone number
     body = request.values.get('Body')
     number = request.values.get('From')
     
-    if numberExists(number):
-        processExisting(body, number)
-
+    if number_exists(number):
+        process.process_existing(body, number)
     else:
-        processNew(body, number)
+        process.process_new(body, number)
 
+#---------------------------------------------
+# private helper methods
+# --------------------------------------------  
 
-def convertDate(created_at):
+def _convert_date(created_at):
     dif = datetime.datetime.utcnow() - created_at
 
     if dif <= datetime.timedelta(seconds = 60):

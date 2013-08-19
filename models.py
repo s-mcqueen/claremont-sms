@@ -1,6 +1,9 @@
 import datetime
-
 from app import db
+
+#---------------------------------------------
+# model class schema
+# --------------------------------------------
 
 class Message(db.DynamicDocument):
     ''' class to hold the message fields'''
@@ -24,10 +27,12 @@ class User(db.DynamicDocument):
     is_active = db.BooleanField(default=False)
     # guess_counter = db.StringField(max_length=5)
 
+#---------------------------------------------
+# model layer actions
+# --------------------------------------------
 
-def numberExists(phone_number):
+def number_exists(phone_number):
     ''' checks if number exists in users db'''
-
     try:
         user = User.objects(phone = phone_number).get()
     except Exception, e:
@@ -36,9 +41,8 @@ def numberExists(phone_number):
         return True
 
 
-def userExists(user_name):
+def user_exists(user_name):
     ''' check if user name exists in users db'''
-
     try:
         user = User.objects(name = user_name).get()
     except Exception, e:
@@ -47,25 +51,30 @@ def userExists(user_name):
         return True
 
 
-def createUser(name, phone):
+def create_user(name, number):
     ''' create a new user in the db '''
+    if len(number) == 10:
+        number = "+1" + number
     new_user = User()
     new_user.name = name
-    new_user.phone = phone
+    new_user.phone = number
     new_user.save()
 
 
-def deleteUser(number):
+def delete_user(number):
+    ''' deletes a user in the db '''
     User.objects(phone = number).delete()
 
 
-def setActive(number):
-    number = "+1" + number
+def set_active(number):
+    ''' sets a user to active '''
+    if len(number) == 10:
+        number = "+1" + number
     user = User.objects(phone = number)
     user.update(set__is_active = True)
 
 
-def createMessage(from_name, from_phone, message_body, to_name, to_phone, guess_id):
+def create_message(from_name, from_phone, message_body, to_name, to_phone, guess_id):
     ''' create a new message in the db '''
     new_message = Message()
     new_message.from_name = from_name
@@ -75,3 +84,31 @@ def createMessage(from_name, from_phone, message_body, to_name, to_phone, guess_
     new_message.to_phone = to_phone
     new_message.guess_id = guess_id
     message.save()
+
+def get_number_from_name(user_name):
+    return User.objects(name = user_name).get().phone
+
+def get_name_from_number(number):
+    return User.objects(phone = number).get().name
+
+def get_name_from_guess_id(guess_id):
+    return Message.objects(guess_id = guess_id).get().from_name
+
+def get_verif(number):
+    ''' get a user's verif_code '''
+    verif = User.objects(phone = number).get().verif_code
+    return verif
+
+def set_verif(number, verif_code):
+    ''' set a user's verif_code '''
+    number = "+1" + number
+    user = User.objects(phone = number)
+    user.update(set__verif_code = verif_code)
+
+def get_message_list():
+    ''' returns a list of all messages '''
+    return list(Message.objects())
+
+def get_user_list():
+    ''' returns a list of all users '''
+    return list(User.objects())

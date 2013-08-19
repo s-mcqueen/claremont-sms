@@ -9,7 +9,7 @@
 </head>
 <body>
 	<div class="container" id="header">
-		<h1 id="title">Claremont SMS</h1>
+		<h1 id="title">Grapevine</h1>
 		<h3 id="subtitle"> Text your friends anonymously </h2>
 		
 	</div>
@@ -30,7 +30,7 @@
 					</div>
 					<div id="about-us">
 						<p> 
-							Claremont SMS allows you to text your friends anonymously, with a catch: your friends get to guess if it was you.
+							Grapevine allows you to text your friends anonymously, with a catch: your friends get to guess if it was you.
 						</p>
 						<p>
 							Posts are public on this page.
@@ -57,7 +57,7 @@
 									<div class="row">
 										<span class="fui-mail"></span>
 										<p class="entry-top"> to: {{post.to_name}} </p>										
-										<p class="entry-date"> {{post.created_at}}</p>		
+										<!-- <p class="entry-date"> {{post.created_at}}</p>	 -->	
 									</div>																			
 									<p class="entry-content"> {{post.message}}</p>										
 								{% endif %}
@@ -66,7 +66,7 @@
 									<div class="row">
 										<span class="fui-user"></span>
 										<p class="entry-top"> New user! </p>
-										<p class="entry-date"> {{post.created_at}}</p>
+										<!-- <p class="entry-date"> {{post.created_at}}</p> -->
 									</div>
 									<p class="entry-content"> {{post.name}} has joined! </p>
 								{% endif %}
