@@ -12,6 +12,7 @@ from parse import format_text
 def process_web_signup(name, number):
     # generate random verif_code
     verif_code = randint(100000,999999)
+    number = "+1" + number
 
     # if user exists (but in not active), update verif
     if user_exists(parse.format_text(name)):
