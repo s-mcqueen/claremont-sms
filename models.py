@@ -39,7 +39,7 @@ def number_exists(phone_number):
             return False
     except Exception, e:
         return False
-    elif:
+    else:
         return True
 
 
