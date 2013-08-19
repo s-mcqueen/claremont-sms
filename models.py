@@ -121,4 +121,4 @@ def get_message_list():
 
 def get_user_list():
     ''' returns a list of all active users '''
-    return list(User.objects(is_active = true))
+    return list(User.objects(is_active = True))
