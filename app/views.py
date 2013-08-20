@@ -95,7 +95,7 @@ def receive_text():
 def _convert_date(created_at):
     dif = datetime.now() - created_at    
 
-    if dif <= timedelta(microseconds = 1000000)
+    if dif <= timedelta(microseconds = 1000000):
         return "0 seconds ago"
     elif dif <= timedelta(seconds = 60):
         return "%d second%s ago" % (dif.seconds, "s"[dif.seconds==1:])
