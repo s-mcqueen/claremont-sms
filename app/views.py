@@ -1,8 +1,10 @@
+from datetime import datetime, timedelta
 from flask import Flask, request, redirect, render_template, session, url_for, send_from_directory, jsonify
 from wtforms import Form, BooleanField, TextField, validators, ValidationError
 from models import get_message_list, get_user_list, number_exists, user_exists, delete_user
 from lib import forms, process
 from app import app
+import pdb
 
 #---------------------------------------------
 # web controller actions
@@ -11,7 +13,6 @@ from app import app
 @app.route("/", methods = ['GET','POST'])
 def display():
     ''' displays messages and processes signup form '''
-
     messages = get_message_list()
     users = get_user_list()
 
@@ -20,16 +21,16 @@ def display():
     posts.sort(key=lambda x: x.created_at, reverse = True)
 
     # convert created_at to a format we care about
-    # for x in xrange(len(posts)):
-    #     posts[x].created_at = convertDate(posts[x].created_at)
+    for x in xrange(len(posts)):
+        posts[x].created_at = _convert_date(posts[x].created_at)
 
     return render_template('index.html', posts = posts)
 
 
 @app.route("/signup", methods = ['POST'])
 def signup():
-    ''' receives signup form data from the homepage signup form and checks for errors '''
-
+    ''' receives signup form data from the homepage signup form 
+        and checks for errors '''
     if request.method == "POST":
         data = request.form        
        
@@ -45,8 +46,8 @@ def signup():
 
 @app.route("/send_verif", methods = ['POST'])
 def send_verif():
-    ''' sends the user a verif_code and stores their info with is_active = false'''
-
+    ''' sends the user a verif_code and stores their info with 
+        is_active = false'''
     if request.method == "POST":
         data = request.form               
         forms.process_web_signup(data['user'], data['number'])          
@@ -56,7 +57,6 @@ def send_verif():
 @app.route("/receive_verif", methods = ['POST'])
 def receive_verif():
     ''' receives verif form data from the verif modal and processes it '''
-
     if request.method == "POST":
         data = request.form
 
@@ -93,13 +93,15 @@ def receive_text():
 # --------------------------------------------  
 
 def _convert_date(created_at):
-    dif = datetime.datetime.utcnow() - created_at
+    dif = datetime.now() - created_at    
 
-    if dif <= datetime.timedelta(seconds = 60):
+    if dif <= timedelta(microseconds = 1000000)
+        return "0 seconds ago"
+    elif dif <= timedelta(seconds = 60):
         return "%d second%s ago" % (dif.seconds, "s"[dif.seconds==1:])
-    elif dif <= datetime.timedelta(minutes = 60):
+    elif dif <= timedelta(minutes = 60):
         return "%d minute%s ago" % (dif.minutes, "s"[dif.minutes==1:])
-    elif dif <= datetime.timedelta(minutes = 1440):
+    elif dif <= timedelta(hours = 24):
         return "%d hour%s ago" % (dif.hours, "s"[dif.hours==1:])
     else:
         return "%d day%s ago" % (dif.days, "s"[dif.days ==1:])
