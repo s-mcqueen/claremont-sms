@@ -9,11 +9,6 @@ from lib import tokens
 import twilio.twiml
 from twilio.rest import TwilioRestClient
 
-DB_NAME = 'claremont-sms-db'
-DB_USERNAME = 'evan'
-DB_PASSWORD = 'smegma69'
-DB_HOST_ADDRESS = 'ds031857.mongolab.com:31857/claremont-sms-db'
-
 # init
 
 app = Flask(__name__)
@@ -22,8 +17,8 @@ app.debug = True
 
 # db init
 
-app.config["MONGODB_DB"] = DB_NAME 
-connect(DB_NAME, host='mongodb://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_HOST_ADDRESS)
+app.config["MONGODB_DB"] = 'claremont-sms-db' 
+connect('claremont-sms-db', host='mongodb://' + 'evan' + ':' + tokens.DB_PASSWORD + '@' + tokens.DB_HOST_ADDRESS)
 
 db = MongoEngine(app)
 

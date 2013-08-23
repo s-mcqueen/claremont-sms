@@ -1,3 +1,7 @@
 TWILIO_NUM = "+13038163058"
 TWILIO_ID = "ACfdd41e08b900b330579f39feb9366f4d"
 TWILIO_TOKEN = "d951d114074f6d3aeb672672383f8ab3"
+
+# mongo
+DB_PASSWORD = 'smegma69'
+DB_HOST_ADDRESS = 'ds031857.mongolab.com:31857/claremont-sms-db'
