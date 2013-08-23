@@ -24,7 +24,7 @@ def display():
     for x in xrange(len(posts)):
         posts[x].created_at = _convert_date(posts[x].created_at)
 
-    return render_template('index.html', posts = posts)
+    return render_template('posts.html', posts = posts)
 
 
 @app.route("/signup", methods = ['POST'])
