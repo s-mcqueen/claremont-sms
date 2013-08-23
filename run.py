@@ -6,7 +6,7 @@ import pdb
 import datetime
 from wtforms import ValidationError
 
-from app import *
+from app import app
 
 #---------------------------------------------
 # launch
